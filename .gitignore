@@ -1,0 +1,6 @@
+*.swp
+*.pyc
+.project
+.pydevproject
+*.sqlite3
+*.png
