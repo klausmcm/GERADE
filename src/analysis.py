@@ -1,5 +1,5 @@
-from label.barcode import Barcode
-from label.barcode_label import  BarcodeLabel
+from label.barcode import LabelComponentBarcode
+from label.barcode_label import  LabelComponentText
 import constants
 import sqlite3
 
@@ -12,8 +12,8 @@ def get_module_size( label_specs ):
 
     for i in range( 100 ):
         module_size = i+1
-        b_img = Barcode( label_specs, module_size, variable_id_sample, constants ).get_image()
-        l_img = BarcodeLabel( label_specs, variable_id_sample, constants ).get_image()
+        b_img = LabelComponentBarcode( label_specs, module_size, variable_id_sample, constants ).get_image()
+        l_img = LabelComponentText( label_specs, variable_id_sample, constants ).get_image()
         height = b_img.size[ 1 ] + l_img.size[ 1 ] + module_size
         width  = l_img.size[ 0 ]
         ratio_diff  = abs( ( height / width ) - 1 )

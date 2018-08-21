@@ -1,14 +1,14 @@
 import unittest
 import Image
 import ImageDraw
-from barcode import Barcode
+from barcode import LabelComponentBarcode
 from template import Template
 
 
 class TestBarcode(unittest.TestCase):
 
     def test_set_barcode_coordinates(self):
-        barcode = Barcode(1)
+        barcode = LabelComponentBarcode(1)
         x_coordinates = [119, 556, 993, 1430, 1867]
         for i in range(1, 6):
             barcode.set_barcode_coordinates(i)
