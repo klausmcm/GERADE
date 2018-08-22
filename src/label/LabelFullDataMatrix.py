@@ -1,5 +1,4 @@
 import math
-import numpy
 from src.label.LabelComponentText import LabelComponentText
 from src.label.LabelComponentBarcodeDataMatrix import LabelComponentBarcodeDataMatrix
 from PIL import Image
@@ -23,7 +22,6 @@ class LabelFullDataMatrix:
         self.text_font_size = text_font_size
         self.text = text
         self.label_type = label_type
-        self.line_thickness = separator_line_thickness
         
         if barcode_module_size != -1 and text_font_size != -1:
             self.component_barcode = LabelComponentBarcodeDataMatrix(self.text, self.barcode_module_size)
@@ -39,9 +37,14 @@ class LabelFullDataMatrix:
         else:
             pass
         
-        print(self.text_font_size)
-
-#         self.label_dimensions = self.__calculate_label_dimensions()
+        self.line_thickness = separator_line_thickness
+        self.label_dimensions = (-1, -1)
+        self.label_image = None
+        
+        self.label_dimensions = self._calculate_label_dimensions()
+        
+        self._assemble_components()
+        
 #         self.label_image = Image.new("RGB", self.label_dimensions, "white")
 #         self.__draw_corner_trim_lines()
 #         self.__assemble_components()
@@ -54,9 +57,9 @@ class LabelFullDataMatrix:
         """
         """
         #TODO: document
-        module_size = 0
+        module_size = 1
         while True:
-            barcode_image = LabelComponentBarcodeDataMatrix(self.text, module_size).get_cropped_barcode()
+            barcode_image = LabelComponentBarcodeDataMatrix(self.text, module_size).get_image()
             if (barcode_image.size[0] >= self.component_text.get_image().size[0] and
                 barcode_image.size[1] >= self.component_text.get_image().size[1]):
                 break
@@ -65,52 +68,38 @@ class LabelFullDataMatrix:
         return module_size
     
     def _get_font_size(self):
+        """
+        """
+        #TODO: document
         font_size = -1
         if self.label_type == 0:
             font_size = 0
         else:
             while True:
                 text_image = LabelComponentText(self.text, font_size).get_image()
-                if (text_image.size[0] <= self.component_barcode.get_cropped_barcode().size[0] and
-                    text_image.size[1] <= self.component_barcode.get_cropped_barcode().size[1]):
+                if (text_image.size[0] <= self.component_barcode.get_image().size[0] and
+                    text_image.size[1] <= self.component_barcode.get_image().size[1]):
                     font_size += 1
                 else:
                     break
         return font_size
 
-    def __calculate_label_dimensions(self):
+    def _calculate_label_dimensions(self):
         """
         """
         # TODO: document
-        barcode_datamatrix = self.component_barcode.get_cropped_barcode().add_surrounding_whitespace()
-        if self.label_type == 0:
-            return tuple(numpy.add(barcode_datamatrix.size, (2*self.line_thickness, 2*self.line_thickness)))
-        elif self.label_type == 1:
-            pass
+        barcode_image = self.component_barcode.get_image()
+        if self.label_type == 0 or self.label_type == 1:
+            width = barcode_image.size[0] + 2*self.line_thickness
+            height = barcode_image.size[1] +2*self.line_thickness
         elif self.label_type == 2:
-            width = max([barcode_datamatrix.size[0], self.text.size[0]])
-            height = max([barcode_datamatrix.size[1], self.text.size[1]])
-            return tuple(numpy.add((width, height), (2*self.line_thickness, 2*self.line_thickness)))
+            width = barcode_image.size[0] + self.component_text.get_image().size[0] + 3*self.line_thickness
+            height = barcode_image.size[1] + 2*self.line_thickness
         elif self.label_type == 3:
-            pass
-        elif self.label_type == 4:
-            width_barcode = barcode_datamatrix.size[0]
-            width_text = self.text.get_image().size[0]
-            height_barcode = barcode_datamatrix.size[1]
-            height_text = self.text.get_image().size[1]
-            
-        elif self.label_type == 5:
-            pass
-        elif self.label_type == 6:
-            pass
-        elif self.label_type == 7:
-            pass
-        
-        
-        label_length = max([self.text.get_image().size[0], 
-                            self.barcode.get_image().size[0] + self.text.get_image().size[1] + self.barcode.get_module_size()]) + 2 * self.specs["margin"]
-        return (round(label_length), 
-                round(label_length))
+            #TODO: implement
+            width = -1
+            height = -1
+        return (round(width), round(height))
 
     def __draw_corner_trim_lines(self):
         # TODO: review
@@ -139,29 +128,49 @@ class LabelFullDataMatrix:
 
         return
 
-    def __assemble_components(self):
+    def _assemble_components(self):
         # TODO: review
-        top_y = round((self.label_image.size[1] - 
-                       (self.component_barcode.get_image().size[1] + 
-                        self.text.get_image().size[1] + 
-                        self.component_barcode.get_module_size())) / 2)
-        barcode_label_coordinates = (round((self.label_image.size[0] - self.text.get_image().size[0]) / 2), top_y)
-        barcode_coordinates = (round((self.label_image.size[0] - self.component_barcode.get_image().size[0]) / 2), 
-                               round(top_y + 
-                                     self.text.get_image().size[1] + 
-                                     self.barcode.get_module_size()))
-        self.label_image.paste(self.barcode.get_image(), barcode_coordinates)
-        self.label_image.paste(self.text.get_image(), barcode_label_coordinates)
+        template = Image.new("RGB",
+                             self.label_dimensions,
+                             "black")
+        if self.label_type == 0:
+            template.paste(self.component_barcode.get_image(),
+                           (self.line_thickness, self.line_thickness))
+        elif self.label_type == 1:
+            template.paste(self.component_barcode.get_image(),
+                           (self.line_thickness, self.line_thickness))
+        elif self.label_type == 2:
+            template.paste(self.component_barcode.get_image(),
+                           (self.line_thickness, self.line_thickness))
+            template.paste(self.component_text.get_image(),
+                           (self.component_barcode.get_image().size[0] + 2*self.line_thickness,
+                            round(template.size[1]/2-self.component_text.get_image().size[1]/2)))
+        elif self.label_type == 3:
+            pass
+        self.label_image = template
+        return
+    
 
         return
 
-    def __draw_bounding_box(self):
+    def _draw_bounding_lines(self):
         # TODO: review
         template = Image.new("RGB", 
-                             (self.label_image.size[0] + 2, self.label_image.size[1] + 2), 
+                             self.label_dimensions, 
                              "black")
+        if self.label_type == 0 or self.label_type == 1:
+            template.paste(self.component_barcode.trim_barcode().get_image(), 
+                           (self.line_thickness, self.line_thickness))
+        elif self.label_type == 2:
+            pass
+        elif self.label_type == 3:
+            pass
         template.paste(self.label_image, (1, 1))
         self.label_image = template
+        return
+    
+    def save_to_image_file(self, file_path):
+        self.label_image.save(file_path, "PNG")
         return
 
 

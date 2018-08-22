@@ -10,10 +10,10 @@ class LabelComponentBarcodeCode128:
     def __init__(self, text, module_size):
         self.text = text
         self.module_size = module_size
-        self.barcode_image = self._get_barcode_image(text, module_size)
+        self.barcode_image = self._generate_barcode(text, module_size)
         pass
 
-    def _get_barcode_image(self, string_to_encode, module_size):
+    def _generate_barcode(self, string_to_encode, module_size):
         """Return a PIL image object of the barcode.
         """
         encoder = Code128Encoder(string_to_encode)
@@ -22,7 +22,7 @@ class LabelComponentBarcodeCode128:
         image = Image.open(buffer)
         return image
 
-    def get_cropped_barcode(self):
+    def trim_barcode(self):
         """5x module size top
           10x module size left/right
         """
@@ -33,7 +33,7 @@ class LabelComponentBarcodeCode128:
                                                  5*self.module_size+10*self.module_size))
         return cropped_image
 
-    def add_surrounding_whitespace(self):
+    def get_image(self):
         """
         """
         barcode_with_whitespace = Image.new("RGB", 
