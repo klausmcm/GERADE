@@ -6,7 +6,16 @@
 # count = 0
 # print(len(perms))
 
+import os
 from src.label.LabelFullDataMatrix import LabelFullDataMatrix
 
-l = LabelFullDataMatrix("a0a0\na0a0\n0000\n0000", 2, 2, barcode_module_size=-1, text_font_size=50)
-l.save_to_image_file("/media/sf_shared/test.png")
+def format_int(i):
+    s = "%08d" % (i,)
+    s = "\n".join([s[:4], s[4:]])
+    return s
+
+# for i in range(1000):
+#     string = "\n".join(["a0a0", "a0a0", format_int(i)])
+string="abc"
+l = LabelFullDataMatrix(string, 2, 2, barcode_module_size=-1, text_font_size=50)
+l.save_to_image_file(os.path.join("/media/sf_shared/", "".join(["test", ".png"])))

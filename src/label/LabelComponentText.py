@@ -11,6 +11,12 @@ class LabelComponentText:
         
     def get_image(self):
         return self.text_image
+    
+    def add_white_border(self, border_thickness):
+        image = Image.new("RGB", (self.text_image.size[0] + 2*border_thickness, self.text_image.size[1] + 2*border_thickness), "white")
+        image.paste(self.text_image, (border_thickness, border_thickness))
+        self.text_image = image
+        return
 
     def _get_text_as_image(self, text, font_size):
         """

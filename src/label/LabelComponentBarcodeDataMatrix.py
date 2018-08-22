@@ -22,6 +22,9 @@ class LabelComponentBarcodeDataMatrix:
         
     def get_image(self):
         return self.barcode_image
+    
+    def get_border_thickness(self):
+        return self.module_size * self.whitespace_border_thickness
 
     def _generate_barcode(self, string_to_encode, module_size):
         """Return a PIL image object of the barcode.
