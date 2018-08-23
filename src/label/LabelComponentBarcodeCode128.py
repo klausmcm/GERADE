@@ -8,7 +8,7 @@ from PIL import Image
 
 class LabelComponentBarcodeCode128:
     def __init__(self, text, module_size):
-        self.text = text
+        self.text_on_label = text
         self.module_size = module_size
         self.barcode_image = self._generate_barcode(text, module_size)
         pass

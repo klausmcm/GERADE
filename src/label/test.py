@@ -16,6 +16,17 @@ def format_int(i):
 
 # for i in range(1000):
 #     string = "\n".join(["a0a0", "a0a0", format_int(i)])
-string="abc"
-l = LabelFullDataMatrix(string, 2, 2, barcode_module_size=-1, text_font_size=50)
-l.save_to_image_file(os.path.join("/media/sf_shared/", "".join(["test", ".png"])))
+string = "\n".join(["a0a0", "a0a0", "0000", "1234"])
+l = LabelFullDataMatrix(string,
+                        separator_line_thickness=1,
+                        label_type=2,
+                        barcode_module_size=20,
+                        text_font_size=-1)
+l.save_to_image_file(os.path.join("/media/sf_shared/", "".join(["test2", ".png"])))
+
+l = LabelFullDataMatrix(string,
+                        separator_line_thickness=1,
+                        label_type=3,
+                        barcode_module_size=20,
+                        text_font_size=-1)
+l.save_to_image_file(os.path.join("/media/sf_shared/", "".join(["test3", ".png"])))
