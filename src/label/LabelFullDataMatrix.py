@@ -154,6 +154,7 @@ class LabelFullDataMatrix:
             return label_image
 
 
+        self.dpi = (600, 600)
         self.label_type = label_type
         self.barcode_module_size = barcode_module_size
         self.text_font_size = text_font_size
@@ -223,7 +224,7 @@ class LabelFullDataMatrix:
     def save_to_image_file(self, file_path):
         """
         """
-        self.label_image.save(file_path, "PNG", dpi=(600, 600))
+        self.label_image.save(file_path, "PNG", dpi=self.dpi)
         return
 
 
