@@ -8,6 +8,5 @@ python_version = "3.5"
 
 [packages]
 pystrich = "*"
-numpy = "*"
 
 [dev-packages]

@@ -33,7 +33,7 @@ class LabelComponentBarcodeCode128:
             return image
         
         def _add_whitespace_padding(barcode_image, padding_size, module_size):
-            whitespace_padding_pixels = padding_size*module_size
+            whitespace_padding_pixels = max([padding_size*module_size, 10])
             padded = Image.new("RGB",
                                (barcode_image.size[0] + 2*whitespace_padding_pixels,
                                 barcode_image.size[1] + 2*whitespace_padding_pixels),
