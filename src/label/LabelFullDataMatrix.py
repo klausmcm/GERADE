@@ -49,12 +49,12 @@ class LabelFullDataMatrix:
             """
             """
             #TODO: document
-            text_image = LabelComponentText(text_on_label, font_size).get_image()
+            text_image = LabelComponentText(text_encoded, font_size).get_image()
             if label_type == 3:
                 text_image = text_image.rotate(90, expand=True)
             module_size = 1
             while True:
-                barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, module_size, whitespace_border_thickness=0).get_image()
+                barcode_image = LabelComponentBarcodeDataMatrix(text_encoded, module_size, whitespace_border_thickness=0).get_image()
                 if (barcode_image.size[0] >= text_image.size[0] and
                     barcode_image.size[1] >= text_image.size[1]):
                     break
@@ -66,10 +66,10 @@ class LabelFullDataMatrix:
             """
             """
             #TODO: document
-            barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, barcode_module_size, 0).get_image()
+            barcode_image = LabelComponentBarcodeDataMatrix(text_encoded, barcode_module_size, 0).get_image()
             font_size = -1
             while True:
-                text_image = LabelComponentText(text_on_label, font_size).get_image()
+                text_image = LabelComponentText(text_encoded, font_size).get_image()
                 if label_type == 3:
                     text_image = text_image.rotate(90, expand=True)
                 if (text_image.size[0] <= barcode_image.size[0] and
@@ -160,23 +160,23 @@ class LabelFullDataMatrix:
         self.text_font_size = text_font_size
         self.separator_line_thickness = separator_line_thickness
         
-        self.text_on_label = _get_text_on_label(text, label_type)
+        self.text_encoded = _get_text_on_label(text, label_type)
         self.component_barcode = None
         self.component_text = None
         
         if barcode_module_size != -1 and text_font_size != -1:
-            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size)
-            self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
+            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_encoded, self.barcode_module_size)
+            self.component_text = LabelComponentText(self.text_encoded, self.text_font_size)
             self.component_text.add_white_border(self.component_barcode.get_border_thickness())
         elif barcode_module_size == -1:
-            self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
-            self.barcode_module_size = _get_barcode_module_size(text_font_size, self.text_on_label, label_type)
-            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size)
+            self.component_text = LabelComponentText(self.text_encoded, self.text_font_size)
+            self.barcode_module_size = _get_barcode_module_size(text_font_size, self.text_encoded, label_type)
+            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_encoded, self.barcode_module_size)
             self.component_text.add_white_border(self.component_barcode.get_border_thickness())
         elif text_font_size == -1:
-            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size)
-            self.text_font_size = _get_font_size(self.text_on_label, barcode_module_size, label_type)
-            self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
+            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_encoded, self.barcode_module_size)
+            self.text_font_size = _get_font_size(self.text_encoded, barcode_module_size, label_type)
+            self.component_text = LabelComponentText(self.text_encoded, self.text_font_size)
             self.component_text.add_white_border(self.component_barcode.get_border_thickness())
         else:
             pass

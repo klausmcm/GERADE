@@ -49,10 +49,10 @@ class LabelComponentBarcodeDataMatrix:
                                            self.whitespace_border_thickness*self.module_size))
             return barcode_with_whitespace
         
-        self.text_on_label = "".join([c for c in text if c in string.ascii_letters + string.digits])
+        self.text_encoded = "".join([c for c in text if c in string.ascii_letters + string.digits])
         self.module_size = round(module_size)
         self.whitespace_border_thickness = round(whitespace_border_thickness)
-        self.barcode_image = _add_whitespace_border(_trim_barcode(_generate_barcode(self.text_on_label, module_size)))
+        self.barcode_image = _add_whitespace_border(_trim_barcode(_generate_barcode(self.text_encoded, module_size)))
         
     def get_image(self):
         """
