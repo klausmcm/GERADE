@@ -14,6 +14,7 @@ class LabelFullCode128:
         2 - Code 128 barcode with text at the bottom - barcode has +1/= height as the text and is >=x2 the width of the text
         3 - Code 128 barcode with text on the side (thin but long) - barcode width and height is equal to the text width and height
         """
+        #FIXME: generated label has a quiet space area of 12x module size instead of 10x module size
         def _get_text_on_label(text, label_type):
             result = ""
             if label_type == 0:
@@ -136,6 +137,27 @@ class LabelFullCode128:
             result = _draw_separator_lines(result, component_barcode, component_text, separator_line_thickness, label_type)
             return result
         
+        def _draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness):
+            """
+            """
+            #FIXME:
+            offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
+            draw = ImageDraw.Draw(label_image)
+            for i in range(line_width):
+                draw.line([(0, offset-i),
+                           (offset-i, 0)],
+                          fill="black")
+                draw.line([(label_image.size[0]-offset+i, 0),
+                           (label_image.size[0], offset-i)],
+                          fill="black")
+                draw.line([(label_image.size[0]-1, label_image.size[1]-offset-i),
+                           (label_image.size[0]-offset-i, label_image.size[1]-1)],
+                          fill="black")
+                draw.line([(offset-i, label_image.size[1]),
+                           (0, label_image.size[1]-offset+i)],
+                          fill="black")
+            return label_image
+        
         self.text_encoded = "".join([c for c in text if c in string.ascii_letters + string.digits])
         self.text_on_label = _get_text_on_label(text, label_type)
         self.font_size = text_font_size
@@ -159,38 +181,10 @@ class LabelFullCode128:
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)
         self.label_image = _assemble_components(self.label_dimensions, self.component_barcode, self.component_text, separator_line_thickness, label_type)
-#         self.__draw_corner_trim_lines()
-#         self.__assemble_components()
-#         self.__draw_bounding_box()
+        self.label_image = _draw_corner_trim_lines(self.label_image, separator_line_thickness, 2*barcode_module_size)
  
     def get_image(self):
         return self.label_image
     
     def save_image_to_file(self, file_path, dpi=(600, 600)):
         self.label_image.save(file_path, "PNG", dpi=dpi)
- 
-    def __draw_corner_trim_lines(self):
-        line_width = 2
-        to_trim = math.sqrt(2 * math.pow( self.specs["margin"], 2)) - self.specs["margin"]
-        diagonal_trim_length = 2 * to_trim * math.tan(math.radians(45))
-        label_trim_length = math.sqrt(math.pow(diagonal_trim_length, 2)/2)
-        draw = ImageDraw.Draw(self.label_image)
- 
-        draw.line([(label_trim_length, 0), 
-                   (0, label_trim_length )], 
-                  fill="black", 
-                  width=line_width)
-        draw.line([(self.label_image.size[0] - label_trim_length, 0),
-                   (self.label_image.size[0], label_trim_length)],
-                  fill="black",
-                  width=line_width)
-        draw.line([(self.label_image.size[0], self.label_image.size[0] - label_trim_length),
-                   (self.label_image.size[0] - label_trim_length, self.label_image.size[0])],
-                  fill="black",
-                  width=line_width)
-        draw.line([(0, self.label_image.size[0] - label_trim_length), 
-                   (label_trim_length, self.label_image.size[0])], 
-                  fill="black", 
-                  width=line_width )
- 
-        return
