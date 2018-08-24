@@ -64,8 +64,8 @@ class LabelComponentBarcodeDataMatrix:
         """
         return self.module_size * self.whitespace_border_thickness
 
-    def save_barcode_to_file(self, file_path):
+    def save_barcode_to_file(self, file_path, dpi=(600, 600)):
         """
         """
-        self.barcode_image.save(file_path, "PNG", dpi=(600, 600))
+        self.barcode_image.save(file_path, "PNG", dpi=dpi)
         return

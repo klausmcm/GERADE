@@ -15,23 +15,25 @@ def format_int(i):
     s = "\n".join([s[:4], s[4:]])
     return s
 
-# for i in range(1000):
-#     string = "\n".join(["a0a0", "a0a0", format_int(i)])
-#     file_path_result = "".join(string.split("\n"))
-#     
-#     l = LabelFullDataMatrix(string,
-#                             separator_line_thickness=1,
-#                             label_type=2,
-#                             barcode_module_size=20,
-#                             text_font_size=-1)
-#     l.save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_2", ".png"])))
-#     
-#     l = LabelFullDataMatrix(string,
-#                             separator_line_thickness=1,
-#                             label_type=3,
-#                             barcode_module_size=20,
-#                             text_font_size=-1)
-#     l.save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_3", ".png"])))
+for i in range(1):
+    string = "\n".join(["a0a0", "a0a0", format_int(i)])
+    file_path_result = "".join(string.split("\n"))
+     
+    l = LabelFullDataMatrix(string,
+                            separator_line_thickness=2,
+                            label_type=2,
+                            barcode_module_size=10,
+                            text_font_size=-1)
+    l.save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_2", ".png"])))
+     
+    l = LabelFullDataMatrix(string,
+                            separator_line_thickness=2,
+                            label_type=3,
+                            barcode_module_size=10,
+                            text_font_size=-1)
+    l.save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_3", ".png"])))
 
-l = LabelFullCode128("a0a0a0a012345678", separator_line_thickness=3, label_type=3, barcode_module_size=2, text_font_size=-1)
+l = LabelFullCode128("a0a0a0a012345678", separator_line_thickness=2, label_type=2, barcode_module_size=1, text_font_size=-1)
 l.save_image_to_file("/media/sf_shared/test.png")
+
+print("complete")

@@ -49,12 +49,12 @@ class LabelFullDataMatrix:
             """
             """
             #TODO: document
-            text_image = LabelComponentText(text_encoded, font_size).get_image()
+            text_image = LabelComponentText(text_on_label, font_size).get_image()
             if label_type == 3:
                 text_image = text_image.rotate(90, expand=True)
             module_size = 1
             while True:
-                barcode_image = LabelComponentBarcodeDataMatrix(text_encoded, module_size, whitespace_border_thickness=0).get_image()
+                barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, module_size, whitespace_border_thickness=0).get_image()
                 if (barcode_image.size[0] >= text_image.size[0] and
                     barcode_image.size[1] >= text_image.size[1]):
                     break
@@ -66,10 +66,10 @@ class LabelFullDataMatrix:
             """
             """
             #TODO: document
-            barcode_image = LabelComponentBarcodeDataMatrix(text_encoded, barcode_module_size, 0).get_image()
+            barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, barcode_module_size, 0).get_image()
             font_size = -1
             while True:
-                text_image = LabelComponentText(text_encoded, font_size).get_image()
+                text_image = LabelComponentText(text_on_label, font_size).get_image()
                 if label_type == 3:
                     text_image = text_image.rotate(90, expand=True)
                 if (text_image.size[0] <= barcode_image.size[0] and
@@ -152,39 +152,57 @@ class LabelFullDataMatrix:
             else:
                 pass
             return label_image
+        
+        def _draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness):
+            """
+            """
+            # TODO: review
+            offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
+            draw = ImageDraw.Draw(label_image)
+            for i in range(line_width):
+                draw.line([(0, offset-i),
+                           (offset-i, 0)],
+                          fill="black")
+                draw.line([(label_image.size[0]-offset+i, 0),
+                           (label_image.size[0], offset-i)],
+                          fill="black")
+                print([(label_image.size[0]-offset+i, 0),
+                           (label_image.size[0]-1, offset-i)])
+                draw.line([(label_image.size[0]-1, label_image.size[1]-offset-i),
+                           (label_image.size[0]-offset-i, label_image.size[1]-1)],
+                          fill="black")
+                draw.line([(offset-i, label_image.size[1]),
+                           (0, label_image.size[1]-offset+i)],
+                          fill="black")
+            return label_image
 
-
-        self.dpi = (600, 600)
         self.label_type = label_type
         self.barcode_module_size = barcode_module_size
         self.text_font_size = text_font_size
         self.separator_line_thickness = separator_line_thickness
-        
-        self.text_encoded = _get_text_on_label(text, label_type)
-        self.component_barcode = None
-        self.component_text = None
+        self.text_on_label = _get_text_on_label(text, label_type)
         
         if barcode_module_size != -1 and text_font_size != -1:
-            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_encoded, self.barcode_module_size)
-            self.component_text = LabelComponentText(self.text_encoded, self.text_font_size)
-            self.component_text.add_white_border(self.component_barcode.get_border_thickness())
+            pass
         elif barcode_module_size == -1:
-            self.component_text = LabelComponentText(self.text_encoded, self.text_font_size)
-            self.barcode_module_size = _get_barcode_module_size(text_font_size, self.text_encoded, label_type)
-            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_encoded, self.barcode_module_size)
-            self.component_text.add_white_border(self.component_barcode.get_border_thickness())
+            self.barcode_module_size = _get_barcode_module_size(text_font_size,
+                                                                self.text_on_label,
+                                                                label_type)
         elif text_font_size == -1:
-            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_encoded, self.barcode_module_size)
-            self.text_font_size = _get_font_size(self.text_encoded, barcode_module_size, label_type)
-            self.component_text = LabelComponentText(self.text_encoded, self.text_font_size)
-            self.component_text.add_white_border(self.component_barcode.get_border_thickness())
+            self.text_font_size = _get_font_size(self.text_on_label,
+                                                 barcode_module_size,
+                                                 label_type)
         else:
             pass
+        
+        self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size)
+        self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
+        self.component_text.add_white_border(self.component_barcode.get_border_thickness())
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)
         self.label_image = _assemble_components(self.component_barcode, self.component_text, self.label_dimensions, separator_line_thickness)
         self.label_image = _draw_bounding_lines(self.component_barcode, self.label_image, separator_line_thickness, label_type)
-#         self._draw_corner_trim_lines()
+        self.label_image = _draw_corner_trim_lines(self.label_image, separator_line_thickness, self.component_barcode.get_border_thickness())
 
 
     def get_image(self):
@@ -192,39 +210,10 @@ class LabelFullDataMatrix:
         """
         return self.label_image
 
-    def _draw_corner_trim_lines(self):
+    def save_to_image_file(self, file_path, dpi=(600, 600)):
         """
         """
-        # TODO: review
-        line_width = 2
-        to_trim = math.sqrt(2 * math.pow( self.specs["margin"], 2)) - self.specs["margin"]
-        diagonal_trim_length = 2 * to_trim * math.tan(math.radians(45))
-        label_trim_length = math.sqrt(math.pow(diagonal_trim_length, 2)/2)
-        draw = ImageDraw.Draw(self.label_image)
-
-        draw.line([(label_trim_length, 0), 
-                   (0, label_trim_length )], 
-                  fill="black", 
-                  width=line_width)
-        draw.line([(self.label_image.size[0] - label_trim_length, 0),
-                   (self.label_image.size[0], label_trim_length)],
-                  fill="black",
-                  width=line_width)
-        draw.line([(self.label_image.size[0], self.label_image.size[0] - label_trim_length),
-                   (self.label_image.size[0] - label_trim_length, self.label_image.size[0])],
-                  fill="black",
-                  width=line_width)
-        draw.line([(0, self.label_image.size[0] - label_trim_length), 
-                   (label_trim_length, self.label_image.size[0])], 
-                  fill="black", 
-                  width=line_width )
-
-        return
-
-    def save_to_image_file(self, file_path):
-        """
-        """
-        self.label_image.save(file_path, "PNG", dpi=self.dpi)
+        self.label_image.save(file_path, "PNG", dpi=dpi)
         return
 
 
