@@ -35,7 +35,7 @@ class LabelFullDataMatrix:
                 text_on_label = "\n".join([text_on_label[:4],
                                            text_on_label[4:8],
                                            text_on_label[8:12],
-                                           text_on_label[12:]])
+                                           text_on_label[12:16]])
             elif label_type == 3:
                 text_on_label = "\n".join(["-".join([text_on_label[:4],
                                                      text_on_label[4:8]]),
@@ -111,7 +111,10 @@ class LabelFullDataMatrix:
             elif label_type == 1:
                 #TODO: implement - still need the transparent text
                 assembled.paste(label_component_barcode.get_image(),
-                               (separator_line_thickness, separator_line_thickness))
+                                (separator_line_thickness, separator_line_thickness))
+                assembled.paste(label_component_text.get_image(),
+                                (round(assembled.size[0]/2 - label_component_text.get_image().size[0]/2),
+                                 round(assembled.size[1]/2 - label_component_text.get_image().size[1]/2)))
             elif label_type == 2 or label_type ==3:
                 image_text = label_component_text.get_image()
                 image_barcode = label_component_barcode.get_image()

@@ -20,7 +20,10 @@ class LabelFullCode128:
             if label_type == 0:
                 result = ""
             elif label_type == 1 or label_type == 2 or label_type == 3:
-                result = "-".join([text[:4], text[4:8], text[8:12], text[12:]])
+                result = "-".join([text[:4],
+                                   text[4:8],
+                                   text[8:12],
+                                   text[12:16]])
             else:
                 result = ""
             return result

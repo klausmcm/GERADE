@@ -21,19 +21,19 @@ for i in range(1):
      
     l = LabelFullDataMatrix(string,
                             separator_line_thickness=2,
-                            label_type=2,
-                            barcode_module_size=10,
+                            label_type=1,
+                            barcode_module_size=5,
                             text_font_size=-1)
-    l.save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_2", ".png"])))
+    l.save_to_image_file(os.path.join("/home/klaus/", "".join([file_path_result + "_2", ".png"])))
      
     l = LabelFullDataMatrix(string,
                             separator_line_thickness=2,
-                            label_type=3,
-                            barcode_module_size=10,
+                            label_type=1,
+                            barcode_module_size=5,
                             text_font_size=-1)
-    l.save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_3", ".png"])))
+    l.save_to_image_file(os.path.join("/home/klaus/", "".join([file_path_result + "_3", ".png"])))
 
 l = LabelFullCode128("a0a0a0a012345678", separator_line_thickness=2, label_type=3, barcode_module_size=10, text_font_size=-1)
-l.save_image_to_file("/media/sf_shared/test.png")
+l.save_image_to_file("/home/klaus/test.png")
 
 print("complete")

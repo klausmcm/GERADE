@@ -41,8 +41,7 @@ class LabelComponentBarcodeCode128:
                               "white")
             image.paste(barcode_image, (minimum_quiet_zone_factor*module_size, 0))
             return image
-        
-        self.dpi = (600, 600)
+
         self.text_encoded = "".join([c for c in text if c in string.ascii_letters + string.digits])
         self.module_size = module_size
         self.barcode_height = round(height)
@@ -68,6 +67,6 @@ class LabelComponentBarcodeCode128:
         self.barcode_image = padded
         return
 
-    def save_barcode_to_file(self, file_path):
-        self.barcode_image.save(file_path, "PNG", dpi=self.dpi)
+    def save_barcode_to_file(self, file_path, dpi=(600, 600)):
+        self.barcode_image.save(file_path, "PNG", dpi=dpi)
         return

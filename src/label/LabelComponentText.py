@@ -4,10 +4,10 @@ from PIL import ImageFont
 from PIL import ImageDraw
 
 class LabelComponentText:
-    def __init__(self, text, font_size, file_path_true_type_font=""):
+    def __init__(self, text, font_size, file_path_true_type_font="", color="black"):
         """
         """
-        def _get_text_as_image(text, font_size):
+        def _get_text_as_image(text, font_size, color):
             """
             """
             if font_size <= 0:
@@ -33,13 +33,13 @@ class LabelComponentText:
                     draw = ImageDraw.Draw(image_line)
                     draw.text((0, 0),
                               lines[i],
-                              fill="black",
+                              fill=color,
                               font=label_font)
                     img.paste(image_line, (0, i*image_height))
                 return img
         self.text_encoded = text
         self.font_size = font_size
-        self.text_image = _get_text_as_image(text, font_size)
+        self.text_image = _get_text_as_image(text, font_size, color)
         
     def get_image(self):
         return self.text_image

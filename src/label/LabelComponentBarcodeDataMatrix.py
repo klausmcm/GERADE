@@ -40,15 +40,20 @@ class LabelComponentBarcodeDataMatrix:
             """
             """
             #TODO: document
-            barcode_with_whitespace = Image.new("RGB",
-                                                (barcode_image.size[0] + 2*self.whitespace_border_thickness*self.module_size,
-                                                 barcode_image.size[1] + 2*self.whitespace_border_thickness*self.module_size),
-                                                "white")
-            barcode_with_whitespace.paste(barcode_image,
-                                          (self.whitespace_border_thickness*self.module_size,
-                                           self.whitespace_border_thickness*self.module_size))
-            return barcode_with_whitespace
+            if self.has_whitespace_border:
+                return barcode_image
+            else:
+                self.has_whitespace_border = True
+                barcode_with_whitespace = Image.new("RGB",
+                                                    (barcode_image.size[0] + 2*self.whitespace_border_thickness*self.module_size,
+                                                     barcode_image.size[1] + 2*self.whitespace_border_thickness*self.module_size),
+                                                    "white")
+                barcode_with_whitespace.paste(barcode_image,
+                                              (self.whitespace_border_thickness*self.module_size,
+                                               self.whitespace_border_thickness*self.module_size))
+                return barcode_with_whitespace
         
+        self.has_whitespace_border = False
         self.text_encoded = "".join([c for c in text if c in string.ascii_letters + string.digits])
         self.module_size = round(module_size)
         self.whitespace_border_thickness = round(whitespace_border_thickness)
