@@ -1,5 +1,4 @@
 import math
-import string
 from src.label.LabelComponentText import LabelComponentText
 from src.label.LabelComponentBarcodeCode128 import LabelComponentBarcodeCode128
 from PIL import Image
@@ -14,7 +13,6 @@ class LabelFullCode128:
         2 - Code 128 barcode with text at the bottom - barcode has +1/= height as the text and is >=x2 the width of the text
         3 - Code 128 barcode with text on the side (thin but long) - barcode width and height is equal to the text width and height
         """
-        #FIXME: generated label has a quiet space area of 12x module size instead of 10x module size
         def _get_text_on_label(text, label_type):
             result = ""
             if label_type == 0:
@@ -23,14 +21,14 @@ class LabelFullCode128:
                 result = "-".join([text[:4],
                                    text[4:8],
                                    text[8:12],
-                                   text[12:16]])
+                                   text[12:]])
             else:
                 result = ""
             return result
         
         def _get_font_size(label_type, text_on_label, barcode_module_size):
             font_size = 1
-            barcode_image = LabelComponentBarcodeCode128(text_on_label, barcode_module_size).get_image_trimmed_barcode()
+            barcode_image = LabelComponentBarcodeCode128(text_on_label, barcode_module_size, quiet_zone_size_factor=0).get_image()
             if label_type == 1 or label_type == 2:
                 while True:
                     text_image = LabelComponentText(text_on_label, font_size).get_image()
@@ -54,14 +52,14 @@ class LabelFullCode128:
             text_image = LabelComponentText(text_on_label, font_size).get_image()
             if label_type == 1 or label_type == 2:
                 while True:
-                    barcode_image = LabelComponentBarcodeCode128(text_on_label, module_size).get_image_trimmed_barcode()
+                    barcode_image = LabelComponentBarcodeCode128(text_on_label, module_size, quiet_zone_size_factor=0).get_image()
                     if barcode_image.size[0] > 2*text_image.size[0]:
                         break
                     else:
                         module_size += 1
             elif label_type == 0 or label_type == 3:
                 while True:
-                    barcode_image = LabelComponentBarcodeCode128(text_on_label, module_size).get_image_trimmed_barcode()
+                    barcode_image = LabelComponentBarcodeCode128(text_on_label, module_size, quiet_zone_size_factor=0).get_image()
                     if barcode_image.size[0] > text_image.size[0]:
                         break
                     else:
@@ -130,20 +128,19 @@ class LabelFullCode128:
                              (separator_line_thickness, separator_line_thickness))
                 result.paste(component_text.get_image(),
                              (separator_line_thickness + round(label_dimensions[0]/2 - component_text.get_image().size[0]/2),
-                              2*separator_line_thickness + component_barcode.get_image().size[1]))
+                              2*separator_line_thickness + component_barcode.get_image().size[1] + round((label_dimensions[1] - separator_line_thickness - component_barcode.get_image().size[1])/2 - component_text.get_image().size[1]/2)))
             elif label_type == 3:
                 result.paste(component_barcode.get_image(),
                              (separator_line_thickness, separator_line_thickness))
                 result.paste(component_text.get_image(),
                              (2*separator_line_thickness + component_barcode.get_image().size[0],
-                              separator_line_thickness))
+                              round(label_dimensions[1]/2 - component_text.get_image().size[1]/2)))
             result = _draw_separator_lines(result, component_barcode, component_text, separator_line_thickness, label_type)
             return result
         
         def _draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness):
             """
             """
-            #FIXME:
             offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
             draw = ImageDraw.Draw(label_image)
             for i in range(line_width):
@@ -161,7 +158,6 @@ class LabelFullCode128:
                           fill="black")
             return label_image
         
-        self.text_encoded = "".join([c for c in text if c in string.ascii_letters + string.digits])
         self.text_on_label = _get_text_on_label(text, label_type)
         self.font_size = text_font_size
         self.barcode_module_size = barcode_module_size
@@ -177,10 +173,10 @@ class LabelFullCode128:
             pass
         
         self.component_text = LabelComponentText(self.text_on_label, self.font_size)
-        self.component_barcode = LabelComponentBarcodeCode128(self.text_encoded, self.barcode_module_size, height=self.component_text.get_image().size[1])
+        self.component_barcode = LabelComponentBarcodeCode128(text, self.barcode_module_size, height=self.component_text.get_image().size[1])
         
         self.component_text.add_white_border(2*barcode_module_size)
-        self.component_barcode.add_whitespace_padding(2*barcode_module_size)
+        self.component_barcode.add_padding(2*barcode_module_size)
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)
         self.label_image = _assemble_components(self.label_dimensions, self.component_barcode, self.component_text, separator_line_thickness, label_type)

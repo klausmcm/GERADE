@@ -35,7 +35,7 @@ class LabelFullDataMatrix:
                 text_on_label = "\n".join([text_on_label[:4],
                                            text_on_label[4:8],
                                            text_on_label[8:12],
-                                           text_on_label[12:16]])
+                                           text_on_label[12:]])
             elif label_type == 3:
                 text_on_label = "\n".join(["-".join([text_on_label[:4],
                                                      text_on_label[4:8]]),
@@ -54,9 +54,9 @@ class LabelFullDataMatrix:
                 text_image = text_image.rotate(90, expand=True)
             module_size = 1
             while True:
-                barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, module_size, whitespace_border_thickness=0).get_image()
-                if (barcode_image.size[0] >= text_image.size[0] and
-                    barcode_image.size[1] >= text_image.size[1]):
+                barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, module_size, quiet_zone_thickness=0).get_image()
+                if (barcode_image.size[0] > text_image.size[0] and
+                    barcode_image.size[1] > text_image.size[1]):
                     break
                 else:
                     module_size += 1
@@ -66,14 +66,14 @@ class LabelFullDataMatrix:
             """
             """
             #TODO: document
-            barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, barcode_module_size, 0).get_image()
+            barcode_image = LabelComponentBarcodeDataMatrix(text_on_label, barcode_module_size, quiet_zone_thickness=0).get_image()
             font_size = -1
             while True:
                 text_image = LabelComponentText(text_on_label, font_size).get_image()
                 if label_type == 3:
                     text_image = text_image.rotate(90, expand=True)
-                if (text_image.size[0] <= barcode_image.size[0] and
-                    text_image.size[1] <= barcode_image.size[1]):
+                if (text_image.size[0] < barcode_image.size[0] and
+                    text_image.size[1] < barcode_image.size[1]):
                     font_size += 1
                 else:
                     break
@@ -103,11 +103,11 @@ class LabelFullDataMatrix:
             """
             #TODO: document
             assembled = Image.new("RGB",
-                                 label_dimensions,
-                                 "white")
+                                  label_dimensions,
+                                  "white")
             if label_type == 0:
                 assembled.paste(label_component_barcode.get_image(),
-                               (separator_line_thickness, separator_line_thickness))
+                                (separator_line_thickness, separator_line_thickness))
             elif label_type == 1:
                 #TODO: implement - still need the transparent text
                 assembled.paste(label_component_barcode.get_image(),
@@ -123,8 +123,8 @@ class LabelFullDataMatrix:
                 assembled.paste(image_barcode,
                                (separator_line_thickness, separator_line_thickness))
                 assembled.paste(image_text,
-                               (image_barcode.size[0] + 2*separator_line_thickness,
-                                round(assembled.size[1]/2 - image_text.size[1]/2)))
+                                (image_barcode.size[0] + 2*separator_line_thickness,
+                                 round(assembled.size[1]/2 - image_text.size[1]/2)))
             elif label_type == 4:
                 pass
             return assembled
@@ -195,9 +195,9 @@ class LabelFullDataMatrix:
         else:
             pass
         
-        self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size)
+        self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=2*self.barcode_module_size)
         self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
-        self.component_text.add_white_border(self.component_barcode.get_border_thickness())
+        self.component_text.add_white_border(2*self.barcode_module_size)
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)
         self.label_image = _assemble_components(self.component_barcode, self.component_text, self.label_dimensions, separator_line_thickness)
