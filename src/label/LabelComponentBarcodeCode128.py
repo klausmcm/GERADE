@@ -8,7 +8,7 @@ from pystrich.code128 import Code128Encoder
 from PIL import Image
 
 class LabelComponentBarcodeCode128:
-    def __init__(self, text, module_size, height=1, quiet_zone_size_factor=1):
+    def __init__(self, text, module_size, height=1, quiet_zone_size_factor=10):
         def _generate_barcode(string_to_encode, module_size):
             """Return a PIL image object of the barcode.
             """

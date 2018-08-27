@@ -175,8 +175,8 @@ class LabelFullCode128:
         self.component_text = LabelComponentText(self.text_on_label, self.font_size)
         self.component_barcode = LabelComponentBarcodeCode128(text, self.barcode_module_size, height=self.component_text.get_image().size[1])
         
-        self.component_text.add_white_border(2*barcode_module_size)
-        self.component_barcode.add_padding(2*barcode_module_size)
+        self.component_text.add_white_border(2*self.barcode_module_size)
+        self.component_barcode.add_padding(2*self.barcode_module_size)
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)
         self.label_image = _assemble_components(self.label_dimensions, self.component_barcode, self.component_text, separator_line_thickness, label_type)
