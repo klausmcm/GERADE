@@ -40,10 +40,10 @@ class LabelComponentBarcodeCode128:
             if isinstance(module_size * size_factor, int) and module_size * size_factor > 0:
                 quiet_zone_size = size_factor * module_size
                 image = Image.new("RGB",
-                                  (barcode_image.size[0] + 2*quiet_zone_size*module_size,
+                                  (barcode_image.size[0] + 2*quiet_zone_size,
                                    barcode_image.size[1]),
                                   "white")
-                image.paste(barcode_image, (quiet_zone_size*module_size, 0))
+                image.paste(barcode_image, (quiet_zone_size, 0))
                 return image
             else:
                 return barcode_image

@@ -14,7 +14,7 @@ import os
 from src.label.LabelFullDataMatrix import LabelFullDataMatrix
 from src.label.LabelFullCode128 import LabelFullCode128
 
-font_size = 32
+font_size = 50
  
 def format_int(i):
     s = "%08d" % (i,)
