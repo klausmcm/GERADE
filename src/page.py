@@ -2,7 +2,8 @@
 @author: Klaus
 '''
 
-import os, math
+import os
+import math
 from PIL import Image, ImageDraw
 from pint import UnitRegistry
 
@@ -18,26 +19,29 @@ class Page():
     #                template.place_single_barcode(Barcode(124), 3)
     #                -> placing barcode 124 at position 3
 
-    def __init__( self, paper_specs, tape_specs ):
-        '''
-        Constructor
-        paper_type is currently set to "default" representing the currently
-        only available measurements.
-        tape_width (mm) is reflecting current available tape.
-        
-        :param paper_type:
-            Currently only "default" creates a usable template. No other
-            paper types are set up.
-        :param tape_width:
-            Given in mm.
-        '''
-        self.tape_width_px     = int( round( tape_specs[ "width" ] ) )
-        self.page_width_px     = int( round( paper_specs[ "width" ] ) )
-        self.page_height_px    = int( round( paper_specs[ "height" ] ) )
-        self.margin_length_px  = int( round( paper_specs[ "margin" ] ) )
-        self.buffer_distance   = int( round( ( 2 * UnitRegistry().mm ).magnitude * constants.DPMM ) )
-        self.page_image        = Image.new( "RGB", ( self.page_width_px, self.page_height_px ), "white" )
-        self.label_coordinates = []
+    def __init__(self, file_path_template, label_coordinates):
+        pass
+
+#     def __init__( self, paper_specs, tape_specs ):
+#         '''
+#         Constructor
+#         paper_type is currently set to "default" representing the currently
+#         only available measurements.
+#         tape_width (mm) is reflecting current available tape.
+#         
+#         :param paper_type:
+#             Currently only "default" creates a usable template. No other
+#             paper types are set up.
+#         :param tape_width:
+#             Given in mm.
+#         '''
+#         self.tape_width_px     = int( round( tape_specs[ "width" ] ) )
+#         self.page_width_px     = int( round( paper_specs[ "width" ] ) )
+#         self.page_height_px    = int( round( paper_specs[ "height" ] ) )
+#         self.margin_length_px  = int( round( paper_specs[ "margin" ] ) )
+#         self.buffer_distance   = int( round( ( 2 * UnitRegistry().mm ).magnitude * constants.DPMM ) )
+#         self.page_image        = Image.new( "RGB", ( self.page_width_px, self.page_height_px ), "white" )
+#         self.label_coordinates = []
 
     def get_grid_dimensions( self ):
         # TODO

@@ -94,8 +94,9 @@ class LabelFullDataMatrix:
                 width = image_barcode.size[0] + image_text.size[0] + 3*separator_line_thickness
                 height = image_barcode.size[1] + 2*separator_line_thickness
             elif label_type == 4:
-                #TODO: implement
-                pass
+                golden_ratio = (1+5**0.5)/2
+                width = image_barcode.size[0] + 2*separator_line_thickness
+                height = 2*round(golden_ratio*image_barcode.size[1] + separator_line_thickness) + separator_line_thickness
             return (round(width), round(height))
         
         def _assemble_components(label_component_barcode, label_component_text, label_dimensions, separator_line_thickness):
@@ -127,7 +128,14 @@ class LabelFullDataMatrix:
                                  round(assembled.size[1]/2 - image_text.size[1]/2)),
                                 mask=image_text)
             elif label_type == 4:
-                pass
+                image_text = label_component_text.get_image().rotate(180)
+                image_barcode = label_component_barcode.get_image()
+                height_empty_areas = label_dimensions[1] - 3*separator_line_thickness - 2*image_barcode.size[1]
+                assembled.paste(image_barcode,
+                                (separator_line_thickness, round(label_dimensions[1] - 2*separator_line_thickness - height_empty_areas/2 - image_text.size[1] - image_barcode.size[1] - 1)))
+                assembled.paste(image_text,
+                                (round(label_dimensions[0]/2 - image_text.size[0]/2), round(label_dimensions[1] - separator_line_thickness - height_empty_areas/2 - image_text.size[1] - 1)),
+                                mask=image_text)
             return assembled
         
         def _draw_bounding_lines(label_component_barcode, label_image, separator_line_thickness, label_type):
@@ -153,13 +161,17 @@ class LabelFullDataMatrix:
                     draw.line([(separator_line_thickness + label_component_barcode.get_image().size[0] +i, 0), 
                                (separator_line_thickness + label_component_barcode.get_image().size[0] +i, label_image.size[1]-1)], 
                               fill="black")
+            elif label_type == 4:
+                #TODO: implement
+                pass
             else:
                 pass
             return label_image
         
-        def _draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness):
+        def _draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness, label_type):
             """
             """
+            #TODO: may need to fix +/- 1 issue
             offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
             draw = ImageDraw.Draw(label_image)
             for i in range(line_width):
@@ -175,8 +187,11 @@ class LabelFullDataMatrix:
                 draw.line([(offset-i, label_image.size[1]),
                            (0, label_image.size[1]-offset+i)],
                           fill="black")
+            if label_type == 4:
+                #TODO: implement
+                pass
             return label_image
-
+        
         self.label_type = label_type
         self.barcode_module_size = barcode_module_size
         self.text_font_size = text_font_size
@@ -196,17 +211,25 @@ class LabelFullDataMatrix:
         else:
             pass
         
-        self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=2*self.barcode_module_size)
+        if label_type == 4:
+            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=2*self.barcode_module_size + self.barcode_module_size)
+        else:
+            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=2*self.barcode_module_size)
+
         if label_type == 1:
             self.component_text = LabelComponentText(self.text_on_label, self.text_font_size, color="gray")
         else:
             self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
-        self.component_text.add_white_border(2*self.barcode_module_size)
+            
+        if label_type == 4:
+            self.component_text.add_white_border(2*self.barcode_module_size + self.barcode_module_size)
+        else:
+            self.component_text.add_white_border(2*self.barcode_module_size)
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)
         self.label_image = _assemble_components(self.component_barcode, self.component_text, self.label_dimensions, separator_line_thickness)
         self.label_image = _draw_bounding_lines(self.component_barcode, self.label_image, separator_line_thickness, label_type)
-        self.label_image = _draw_corner_trim_lines(self.label_image, separator_line_thickness, self.component_barcode.get_border_thickness())
+        self.label_image = _draw_corner_trim_lines(self.label_image, separator_line_thickness, self.component_barcode.get_border_thickness(), label_type)
 
 
     def get_image(self):

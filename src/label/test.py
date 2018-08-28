@@ -25,7 +25,7 @@ for i in range(1):
     string = "\n".join(["a0a0", "a0a0", format_int(i)])
     file_path_result = "".join(string.split("\n"))
     
-text_to_encode = "Carrie is so cute!"
+text_to_encode = "a0a0a0a012345678"
     
 l = LabelFullDataMatrix(text_to_encode,
                         separator_line_thickness=1,
@@ -45,11 +45,11 @@ l = LabelFullDataMatrix(text_to_encode,
                         barcode_module_size=-1,
                         text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_3", ".png"])))
                         
-# l = LabelFullDataMatrix(text_to_encode,
-#                         separator_line_thickness=1,
-#                         label_type=4,
-#                         barcode_module_size=-1,
-#                         text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_4", ".png"])))
+l = LabelFullDataMatrix(text_to_encode,
+                        separator_line_thickness=1,
+                        label_type=4,
+                        barcode_module_size=-1,
+                        text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_4", ".png"])))
     
 l = LabelFullCode128(text_to_encode,
                      separator_line_thickness=1,
