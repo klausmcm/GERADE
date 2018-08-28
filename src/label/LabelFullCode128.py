@@ -1,4 +1,5 @@
 import math
+import string
 from src.label.LabelComponentText import LabelComponentText
 from src.label.LabelComponentBarcodeCode128 import LabelComponentBarcodeCode128
 from PIL import Image
@@ -14,17 +15,17 @@ class LabelFullCode128:
         3 - Code 128 barcode with text on the side (thin but long) - barcode width and height is equal to the text width and height
         """
         def _get_text_on_label(text, label_type):
-            result = ""
+            text_on_label = "".join([c for c in text if c in string.ascii_letters + string.digits])
             if label_type == 0:
-                result = ""
+                text_on_label = ""
             elif label_type == 1 or label_type == 2 or label_type == 3:
-                result = "-".join([text[:4],
-                                   text[4:8],
-                                   text[8:12],
-                                   text[12:]])
+                text_on_label = "-".join([text_on_label[:4],
+                                          text_on_label[4:8],
+                                          text_on_label[8:12],
+                                          text_on_label[12:]])
             else:
-                result = ""
-            return result
+                text_on_label = ""
+            return text_on_label
         
         def _get_font_size(label_type, text_on_label, barcode_module_size):
             font_size = 1
@@ -174,7 +175,7 @@ class LabelFullCode128:
         elif barcode_module_size == -1:
             self.barcode_module_size = _get_barcode_module_size(label_type, text_font_size, self.text_on_label)
         elif text_font_size == -1:
-            self.font_size = _get_font_size(label_type, text, barcode_module_size)
+            self.font_size = _get_font_size(label_type, self.text_on_label, barcode_module_size)
         else:
             pass
         
