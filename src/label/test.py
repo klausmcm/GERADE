@@ -24,30 +24,44 @@ def format_int(i):
 for i in range(1):
     string = "\n".join(["a0a0", "a0a0", format_int(i)])
     file_path_result = "".join(string.split("\n"))
-      
-    l = LabelFullDataMatrix(string,
-                            separator_line_thickness=1,
-                            label_type=1,
-                            barcode_module_size=-1,
-                            text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_2", ".png"])))
-      
-    l = LabelFullDataMatrix(string,
-                            separator_line_thickness=1,
-                            label_type=1,
-                            barcode_module_size=-1,
-                            text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_3", ".png"])))
     
-l = LabelFullCode128("a0a0a0a012345678",
+text_to_encode = "Carrie is so cute!"
+    
+l = LabelFullDataMatrix(text_to_encode,
+                        separator_line_thickness=1,
+                        label_type=1,
+                        barcode_module_size=-1,
+                        text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_1", ".png"])))
+  
+l = LabelFullDataMatrix(text_to_encode,
+                        separator_line_thickness=1,
+                        label_type=2,
+                        barcode_module_size=-1,
+                        text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_2", ".png"])))
+  
+l = LabelFullDataMatrix(text_to_encode,
+                        separator_line_thickness=1,
+                        label_type=3,
+                        barcode_module_size=-1,
+                        text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_3", ".png"])))
+                        
+# l = LabelFullDataMatrix(text_to_encode,
+#                         separator_line_thickness=1,
+#                         label_type=4,
+#                         barcode_module_size=-1,
+#                         text_font_size=font_size).save_to_image_file(os.path.join("/media/sf_shared/", "".join([file_path_result + "_4", ".png"])))
+    
+l = LabelFullCode128(text_to_encode,
                      separator_line_thickness=1,
                      label_type=1,
                      barcode_module_size=-1,
                      text_font_size=font_size).save_image_to_file("/media/sf_shared/test1.png")
-l = LabelFullCode128("a0a0a0a012345678",
+l = LabelFullCode128(text_to_encode,
                      separator_line_thickness=1,
                      label_type=2,
                      barcode_module_size=-1,
                      text_font_size=font_size).save_image_to_file("/media/sf_shared/test2.png")
-l = LabelFullCode128("a0a0a0a012345678",
+l = LabelFullCode128(text_to_encode,
                      separator_line_thickness=1,
                      label_type=3,
                      barcode_module_size=-1,

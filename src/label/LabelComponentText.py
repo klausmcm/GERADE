@@ -11,7 +11,7 @@ class LabelComponentText:
             """
             """
             if font_size <= 0:
-                return Image.new("RGB", (0, 0), "white")
+                return Image.new("RGBA", (0, 0))
             else:
                 if file_path_true_type_font != "":
                     label_font = ImageFont.truetype(file_path_true_type_font, font_size)
@@ -23,19 +23,17 @@ class LabelComponentText:
                 
                 lines = text.split("\n")
                 
-                img = Image.new("RGB",
-                                (image_width, len(lines)*image_height),
-                                "white")
+                img = Image.new("RGBA",
+                                (image_width, len(lines)*image_height))
                 for i in range(len(lines)):
-                    image_line = Image.new("RGB",
-                                           (image_width, image_height),
-                                           "white")
+                    image_line = Image.new("RGBA",
+                                           (image_width, image_height))
                     draw = ImageDraw.Draw(image_line)
                     draw.text((0, 0),
                               lines[i],
                               fill=color,
                               font=label_font)
-                    img.paste(image_line, (0, i*image_height))
+                    img.paste(image_line, (0, i*image_height), mask=image_line)
                 return img
         self.text_encoded = text
         self.font_size = font_size
@@ -45,10 +43,9 @@ class LabelComponentText:
         return self.text_image
     
     def add_white_border(self, border_thickness):
-        image = Image.new("RGB",
+        image = Image.new("RGBA",
                           (self.text_image.size[0] + 2*border_thickness,
-                           self.text_image.size[1] + 2*border_thickness),
-                          "white")
+                           self.text_image.size[1] + 2*border_thickness))
         image.paste(self.text_image, (border_thickness, border_thickness))
         self.text_image = image
         return

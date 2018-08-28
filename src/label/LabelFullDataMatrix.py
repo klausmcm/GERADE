@@ -109,12 +109,12 @@ class LabelFullDataMatrix:
                 assembled.paste(label_component_barcode.get_image(),
                                 (separator_line_thickness, separator_line_thickness))
             elif label_type == 1:
-                #TODO: implement - still need the transparent text
                 assembled.paste(label_component_barcode.get_image(),
                                 (separator_line_thickness, separator_line_thickness))
                 assembled.paste(label_component_text.get_image(),
                                 (round(assembled.size[0]/2 - label_component_text.get_image().size[0]/2),
-                                 round(assembled.size[1]/2 - label_component_text.get_image().size[1]/2)))
+                                 round(assembled.size[1]/2 - label_component_text.get_image().size[1]/2)),
+                                mask=label_component_text.get_image())
             elif label_type == 2 or label_type ==3:
                 image_text = label_component_text.get_image()
                 image_barcode = label_component_barcode.get_image()
@@ -124,7 +124,8 @@ class LabelFullDataMatrix:
                                (separator_line_thickness, separator_line_thickness))
                 assembled.paste(image_text,
                                 (image_barcode.size[0] + 2*separator_line_thickness,
-                                 round(assembled.size[1]/2 - image_text.size[1]/2)))
+                                 round(assembled.size[1]/2 - image_text.size[1]/2)),
+                                mask=image_text)
             elif label_type == 4:
                 pass
             return assembled
@@ -196,7 +197,10 @@ class LabelFullDataMatrix:
             pass
         
         self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=2*self.barcode_module_size)
-        self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
+        if label_type == 1:
+            self.component_text = LabelComponentText(self.text_on_label, self.text_font_size, color="gray")
+        else:
+            self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
         self.component_text.add_white_border(2*self.barcode_module_size)
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)

@@ -123,18 +123,24 @@ class LabelFullCode128:
             elif label_type == 1:
                 result.paste(component_barcode.get_image(),
                              (separator_line_thickness, separator_line_thickness))
+                result.paste(component_text.get_image(),
+                             (separator_line_thickness + round(label_dimensions[0]/2 - component_text.get_image().size[0]/2),
+                              round((label_dimensions[1]/2 - component_text.get_image().size[1]/2))),
+                             mask=component_text.get_image())
             elif label_type == 2:
                 result.paste(component_barcode.get_image(),
                              (separator_line_thickness, separator_line_thickness))
                 result.paste(component_text.get_image(),
                              (separator_line_thickness + round(label_dimensions[0]/2 - component_text.get_image().size[0]/2),
-                              2*separator_line_thickness + component_barcode.get_image().size[1] + round((label_dimensions[1] - separator_line_thickness - component_barcode.get_image().size[1])/2 - component_text.get_image().size[1]/2)))
+                              2*separator_line_thickness + component_barcode.get_image().size[1] + round((label_dimensions[1] - separator_line_thickness - component_barcode.get_image().size[1])/2 - component_text.get_image().size[1]/2)),
+                             mask=component_text.get_image())
             elif label_type == 3:
                 result.paste(component_barcode.get_image(),
                              (separator_line_thickness, separator_line_thickness))
                 result.paste(component_text.get_image(),
                              (2*separator_line_thickness + component_barcode.get_image().size[0],
-                              round(label_dimensions[1]/2 - component_text.get_image().size[1]/2)))
+                              round(label_dimensions[1]/2 - component_text.get_image().size[1]/2)),
+                             mask=component_text.get_image())
             result = _draw_separator_lines(result, component_barcode, component_text, separator_line_thickness, label_type)
             return result
         
@@ -172,7 +178,10 @@ class LabelFullCode128:
         else:
             pass
         
-        self.component_text = LabelComponentText(self.text_on_label, self.font_size)
+        if label_type == 1:
+            self.component_text = LabelComponentText(self.text_on_label, self.font_size, color="gray")
+        else:    
+            self.component_text = LabelComponentText(self.text_on_label, self.font_size)
         self.component_barcode = LabelComponentBarcodeCode128(text, self.barcode_module_size, height=self.component_text.get_image().size[1])
         
         self.component_text.add_white_border(2*self.barcode_module_size)
