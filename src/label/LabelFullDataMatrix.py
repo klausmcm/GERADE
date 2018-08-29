@@ -96,7 +96,7 @@ class LabelFullDataMatrix:
             elif label_type == 4:
                 golden_ratio = (1+5**0.5)/2
                 width = image_barcode.size[0] + 2*separator_line_thickness
-                height = 2*round(golden_ratio*image_barcode.size[1] + separator_line_thickness) + separator_line_thickness
+                height = 2*round(golden_ratio*image_barcode.size[1] + separator_line_thickness)
             return (round(width), round(height))
         
         def _assemble_components(label_component_barcode, label_component_text, label_dimensions, separator_line_thickness):
@@ -130,12 +130,31 @@ class LabelFullDataMatrix:
             elif label_type == 4:
                 image_text = label_component_text.get_image().rotate(180)
                 image_barcode = label_component_barcode.get_image()
-                height_empty_areas = label_dimensions[1] - 3*separator_line_thickness - 2*image_barcode.size[1]
+                circle_diameter = 88
+                image_circle = Image.new("RGBA", (circle_diameter, circle_diameter))
+                image_circle_draw = ImageDraw.Draw(image_circle)
+                image_circle_draw.ellipse([0, 0, circle_diameter-1, circle_diameter-1], fill="white", outline="black")
+                image_circle_draw.ellipse([circle_diameter/2 - circle_diameter/(2**2), circle_diameter/2 - circle_diameter/(2**2),
+                                           circle_diameter/2 + circle_diameter/(2**2) - 1, circle_diameter/2 + circle_diameter/(2**2) - 1],
+                                          fill="white",
+                                          outline="black")
+                image_circle_draw.ellipse([circle_diameter/2 - circle_diameter/(2**3), circle_diameter/2 - circle_diameter/(2**3),
+                                           circle_diameter/2 + circle_diameter/(2**3) - 1, circle_diameter/2 + circle_diameter/(2**3) - 1],
+                                          fill="white",
+                                          outline="black")
+                height_empty_areas = label_dimensions[1] - 2*separator_line_thickness - 2*image_barcode.size[1]
+                
                 assembled.paste(image_barcode,
-                                (separator_line_thickness, round(label_dimensions[1] - 2*separator_line_thickness - height_empty_areas/2 - image_text.size[1] - image_barcode.size[1] - 1)))
+                                (separator_line_thickness,
+                                 round(label_dimensions[1] - separator_line_thickness - height_empty_areas/2 - image_text.size[1] - image_barcode.size[1] - 1)))
                 assembled.paste(image_text,
-                                (round(label_dimensions[0]/2 - image_text.size[0]/2), round(label_dimensions[1] - separator_line_thickness - height_empty_areas/2 - image_text.size[1] - 1)),
+                                (round(label_dimensions[0]/2 - image_text.size[0]/2),
+                                 round(label_dimensions[1] - separator_line_thickness - height_empty_areas/2 - image_text.size[1] - 1)),
                                 mask=image_text)
+                assembled.paste(image_circle,
+                                (round(label_dimensions[0]/2 - image_circle.size[0]/2),
+                                 round(separator_line_thickness + height_empty_areas/4 - image_circle.size[1]/2)),
+                                mask=image_circle)
             return assembled
         
         def _draw_bounding_lines(label_component_barcode, label_image, separator_line_thickness, label_type):
@@ -161,9 +180,6 @@ class LabelFullDataMatrix:
                     draw.line([(separator_line_thickness + label_component_barcode.get_image().size[0] +i, 0), 
                                (separator_line_thickness + label_component_barcode.get_image().size[0] +i, label_image.size[1]-1)], 
                               fill="black")
-            elif label_type == 4:
-                #TODO: implement
-                pass
             else:
                 pass
             return label_image
@@ -212,7 +228,7 @@ class LabelFullDataMatrix:
             pass
         
         if label_type == 4:
-            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=2*self.barcode_module_size + self.barcode_module_size)
+            self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=3*self.barcode_module_size)
         else:
             self.component_barcode = LabelComponentBarcodeDataMatrix(self.text_on_label, self.barcode_module_size, quiet_zone_thickness=2*self.barcode_module_size)
 
@@ -222,7 +238,7 @@ class LabelFullDataMatrix:
             self.component_text = LabelComponentText(self.text_on_label, self.text_font_size)
             
         if label_type == 4:
-            self.component_text.add_white_border(2*self.barcode_module_size + self.barcode_module_size)
+            self.component_text.add_white_border(3*self.barcode_module_size)
         else:
             self.component_text.add_white_border(2*self.barcode_module_size)
         

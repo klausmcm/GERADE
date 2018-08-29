@@ -19,7 +19,7 @@ class Page():
     #                template.place_single_barcode(Barcode(124), 3)
     #                -> placing barcode 124 at position 3
 
-    def __init__(self, file_path_template, label_coordinates):
+    def __init__(self, file_path_template):
         pass
 
 #     def __init__( self, paper_specs, tape_specs ):
