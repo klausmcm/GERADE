@@ -131,7 +131,7 @@ class LabelFullDataMatrix:
                 image_text = label_component_text.get_image().rotate(180)
                 image_barcode = label_component_barcode.get_image()
                 height_empty_areas = label_dimensions[1] - 2*separator_line_thickness - 2*image_barcode.size[1]
-                circle_diameter = round(0.5*0.45*height_empty_areas)
+                circle_diameter = min([88, round(0.5*0.45*height_empty_areas)])
                 image_circle = Image.new("RGBA", (circle_diameter, circle_diameter))
                 image_circle_draw = ImageDraw.Draw(image_circle)
                 image_circle_draw.ellipse([0, 0, circle_diameter-1, circle_diameter-1], fill="white", outline="black")
