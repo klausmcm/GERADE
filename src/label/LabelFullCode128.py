@@ -1,7 +1,7 @@
 import math
 import string
-from src.label.LabelComponentText import LabelComponentText
-from src.label.LabelComponentBarcodeCode128 import LabelComponentBarcodeCode128
+from .LabelComponentText import LabelComponentText
+from .LabelComponentBarcodeCode128 import LabelComponentBarcodeCode128
 from PIL import Image
 from PIL import ImageDraw
  
@@ -194,6 +194,12 @@ class LabelFullCode128:
  
     def get_image(self):
         return self.label_image
+    
+    def get_module_size(self):
+        return self.barcode_module_size
+    
+    def get_font_size(self):
+        return self.font_size
     
     def save_image_to_file(self, file_path, dpi=(600, 600)):
         self.label_image.save(file_path, "PNG", dpi=dpi)

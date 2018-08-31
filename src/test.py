@@ -1,5 +1,6 @@
-from src.label.LabelFullDataMatrix import LabelFullDataMatrix
-from src.Page import Page
+from label.LabelFullDataMatrix import LabelFullDataMatrix
+from label.LabelFullCode128 import LabelFullCode128
+from .Page import Page
 
 def format_int(i):
     s = "%08d" % (i,)
@@ -7,9 +8,12 @@ def format_int(i):
     return s
  
 paper = Page("/media/sf_shared/workspace/barcode/files/template_letter.png")
+barcode_module_size = -1
 
 for i in range(500):
-    label = LabelFullDataMatrix("".join(["a0a0", "a0a0", format_int(i)]), 2, 3, -1, 50) 
+    label = LabelFullCode128("".join(["a0a0", "a0a0", format_int(i)]), 2, 3, barcode_module_size, 50)
+    if barcode_module_size == -1:
+        barcode_module_size = label.get_module_size() 
     coordinates = paper.find_coordinates_for_next_available_spot(label)
     print(coordinates)
     if coordinates == (-1, -1):

@@ -55,6 +55,9 @@ class Page():
         
         return
     
+    def get_page_dimensions(self):
+        return self.template.size
+    
     def save_page_to_file(self, file_path, dpi=(600, 600)):
         '''
         Write template image to an image file.

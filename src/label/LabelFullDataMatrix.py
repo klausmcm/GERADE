@@ -1,7 +1,7 @@
 import math
 import string
-from src.label.LabelComponentText import LabelComponentText
-from src.label.LabelComponentBarcodeDataMatrix import LabelComponentBarcodeDataMatrix
+from .LabelComponentText import LabelComponentText
+from .LabelComponentBarcodeDataMatrix import LabelComponentBarcodeDataMatrix
 from PIL import Image
 from PIL import ImageDraw
 
@@ -247,6 +247,11 @@ class LabelFullDataMatrix:
         self.label_image = _draw_bounding_lines(self.component_barcode, self.label_image, separator_line_thickness, label_type)
         self.label_image = _draw_corner_trim_lines(self.label_image, separator_line_thickness, self.component_barcode.get_border_thickness(), label_type)
 
+    def get_module_size(self):
+        return self.barcode_module_size
+    
+    def get_font_size(self):
+        return self.text_font_size
 
     def get_image(self):
         """
