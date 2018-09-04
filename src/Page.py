@@ -3,8 +3,6 @@
 '''
 
 from PIL import Image
-from PIL import ImageDraw
-
 
 
 class Page():
@@ -12,15 +10,15 @@ class Page():
         self.template = Image.open(file_path_template)
         self.output = Image.new("RGB", self.template.size, "white")
 
-    def find_coordinates_for_next_available_spot(self, label):
+    def find_coordinates_for_next_available_spot(self, label, start_coordinates=(0, 0)):
         """
         """
         label_size = label.get_image().size
         pixels_template = self.template.load()
         coordinates = (-1, -1)
-        for y in range(self.template.size[1]):
-            for x in range(self.template.size[0]):
-                if pixels_template[x, y] == (255, 255, 255):
+        for y in range(self.template.size[1] - start_coordinates[1]):
+            for x in range(self.template.size[0] - start_coordinates[0]):
+                if pixels_template[x + start_coordinates[0], y + start_coordinates[1]] == (255, 255, 255):
                     is_clear = True
                     for y_label in range(label_size[1]):
                         for x_label in range(label_size[0]):
@@ -33,25 +31,29 @@ class Page():
                         return (x, y)
         return coordinates
     
-    def add_label(self, label, label_coordinates):
-        def update_template(template, label, label_coordinates):
+    def add_label(self, label, label_coordinates, overlap=False):
+        def update_template(template, label, label_coordinates, overlap):
             """
             """
             image_label = label.get_image()
             pixels_template = template.load()
+            if overlap:
+                label_coordinates = (label_coordinates[0] - label.get_border_thickness(), label_coordinates[1] - label.get_border_thickness())
             for y in range(image_label.size[1]):
                 for x in range(image_label.size[0]):
-                    pixels_template[x+label_coordinates[0], y+label_coordinates[1]] = (0, 0, 0)
+                    pixels_template[x + label_coordinates[0], y + label_coordinates[1]] = (0, 0, 0)
             return template
         
-        def update_output(output, label, label_coordinates):
+        def update_output(output, label, label_coordinates, overlap):
             """
             """
+            if overlap:
+                label_coordinates = (label_coordinates[0] - label.get_border_thickness(), label_coordinates[1] - label.get_border_thickness())
             output.paste(label.get_image(), label_coordinates)
             return output
         
-        self.template = update_template(self.template, label, label_coordinates)
-        self.output = update_output(self.output, label, label_coordinates)
+        self.template = update_template(self.template, label, label_coordinates, overlap)
+        self.output = update_output(self.output, label, label_coordinates, overlap)
         
         return
     

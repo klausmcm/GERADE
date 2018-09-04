@@ -201,5 +201,8 @@ class LabelFullCode128:
     def get_font_size(self):
         return self.font_size
     
+    def get_border_thickness(self):
+        return self.line_thickness
+    
     def save_image_to_file(self, file_path, dpi=(600, 600)):
         self.label_image.save(file_path, "PNG", dpi=dpi)
