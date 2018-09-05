@@ -19,7 +19,7 @@ if __name__ == "__main__":
     barcode_module_size = -1
     
     for i in range(500):
-        #TODO: test with the case where the line thickness is at least 20
+        #TODO: test with the case where the line thickness is at least 20 -> need to review calculation of trim lines
         label = LabelFullDataMatrix("".join(["a0a0", "a0a0", format_int(i)]), 2, 3, barcode_module_size=-1, text_font_size=80)
         label.save_image_to_file("/media/sf_shared/test" + str(i) + ".png")
         if barcode_module_size == -1:
