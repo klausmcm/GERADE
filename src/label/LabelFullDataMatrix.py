@@ -156,52 +156,52 @@ class LabelFullDataMatrix:
                                  round(separator_line_thickness + height_empty_areas/4 - image_circle.size[1]/2)),
                                 mask=image_circle)
             return assembled
-        
+
         def _draw_bounding_lines(label_component_barcode, label_image, separator_line_thickness, label_type):
             """
             """
             # TODO: document
             draw = ImageDraw.Draw(label_image)
             for i in range(separator_line_thickness):
-                draw.line([(0, i), 
-                           (label_image.size[0]-1, i)], 
+                draw.line([(0, i),
+                           (label_image.size[0] - 1, i)],
                           fill="black")
-                draw.line([(0, label_image.size[1]-1-i), 
-                           (label_image.size[0]-1, label_image.size[1]-1-i)], 
+                draw.line([(0, label_image.size[1] - 1 - i),
+                           (label_image.size[0] - 1, label_image.size[1] - 1 - i)],
                           fill="black")
-                draw.line([(i, 0), 
-                           (i, label_image.size[1]-1)], 
+                draw.line([(i, 0),
+                           (i, label_image.size[1] - 1)],
                            fill="black")
-                draw.line([(label_image.size[0]-1-i, 0),
-                           (label_image.size[0]-1-i, label_image.size[1]-1)],
+                draw.line([(label_image.size[0] - 1 - i, 0),
+                           (label_image.size[0] - 1 - i, label_image.size[1] - 1)],
                           fill="black")
             if label_type == 2 or label_type == 3:
                 for i in range(separator_line_thickness):
-                    draw.line([(separator_line_thickness + label_component_barcode.get_image().size[0] +i, 0), 
-                               (separator_line_thickness + label_component_barcode.get_image().size[0] +i, label_image.size[1]-1)], 
+                    draw.line([(separator_line_thickness + label_component_barcode.get_image().size[0] + i, 0),
+                               (separator_line_thickness + label_component_barcode.get_image().size[0] + i, label_image.size[1] - 1)],
                               fill="black")
             else:
                 pass
             return label_image
-        
+
         def _draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness, label_type):
             """
             """
-            #TODO: may need to fix +/- 1 issue
+            #TODO: polish the coordinate calculations
             offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
             draw = ImageDraw.Draw(label_image)
             for i in range(line_width):
-                draw.line([(0, offset-i),
-                           (offset-i, 0)],
+                draw.line([(0, offset - i),
+                           (offset - i, 0)],
                           fill="black")
-                draw.line([(label_image.size[0]-offset+i, 0),
-                           (label_image.size[0], offset-i)],
+                draw.line([(label_image.size[0] - offset + i - 1, 0),
+                           (label_image.size[0], offset - i + 1)],
                           fill="black")
-                draw.line([(label_image.size[0]-1, label_image.size[1]-offset-i),
-                           (label_image.size[0]-offset-i, label_image.size[1]-1)],
+                draw.line([(label_image.size[0] - 1, label_image.size[1] - offset - i),
+                           (label_image.size[0] - offset - i, label_image.size[1] - 1)],
                           fill="black")
-                draw.line([(offset-i, label_image.size[1]),
-                           (0, label_image.size[1]-offset+i)],
+                draw.line([(offset - i + 1, label_image.size[1]),
+                           (0, label_image.size[1] - offset + i - 1)],
                           fill="black")
             if label_type == 4:
                 #TODO: implement
@@ -257,8 +257,11 @@ class LabelFullDataMatrix:
         """
         """
         return self.label_image
+    
+    def get_border_thickness(self):
+        return self.separator_line_thickness
 
-    def save_to_image_file(self, file_path, dpi=(600, 600)):
+    def save_image_to_file(self, file_path, dpi=(600, 600)):
         """
         """
         self.label_image.save(file_path, "PNG", dpi=dpi)

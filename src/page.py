@@ -13,12 +13,13 @@ class Page():
     def find_coordinates_for_next_available_spot(self, label, start_coordinates=(0, 0)):
         """
         """
+        #TODO: use the start coordinates to make finding an available spot faster
         label_size = label.get_image().size
         pixels_template = self.template.load()
         coordinates = (-1, -1)
-        for y in range(self.template.size[1] - start_coordinates[1]):
-            for x in range(self.template.size[0] - start_coordinates[0]):
-                if pixels_template[x + start_coordinates[0], y + start_coordinates[1]] == (255, 255, 255):
+        for y in range(self.template.size[1]):
+            for x in range(self.template.size[0]):
+                if pixels_template[x, y] == (255, 255, 255):
                     is_clear = True
                     for y_label in range(label_size[1]):
                         for x_label in range(label_size[0]):

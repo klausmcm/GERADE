@@ -151,17 +151,17 @@ class LabelFullCode128:
             offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
             draw = ImageDraw.Draw(label_image)
             for i in range(line_width):
-                draw.line([(0, offset-i),
-                           (offset-i, 0)],
+                draw.line([(0, offset - i),
+                           (offset - i, 0)],
                           fill="black")
-                draw.line([(label_image.size[0]-offset+i, 0),
-                           (label_image.size[0], offset-i)],
+                draw.line([(label_image.size[0] - offset + i - 1, 0),
+                           (label_image.size[0], offset - i + 1)],
                           fill="black")
-                draw.line([(label_image.size[0]-1, label_image.size[1]-offset-i),
-                           (label_image.size[0]-offset-i, label_image.size[1]-1)],
+                draw.line([(label_image.size[0] - 1, label_image.size[1] - offset - i),
+                           (label_image.size[0] - offset - i, label_image.size[1] - 1)],
                           fill="black")
-                draw.line([(offset-i, label_image.size[1]),
-                           (0, label_image.size[1]-offset+i)],
+                draw.line([(offset - i + 1, label_image.size[1]),
+                           (0, label_image.size[1] - offset + i - 1)],
                           fill="black")
             return label_image
         
@@ -185,8 +185,8 @@ class LabelFullCode128:
             self.component_text = LabelComponentText(self.text_on_label, self.font_size)
         self.component_barcode = LabelComponentBarcodeCode128(text, self.barcode_module_size, height=self.component_text.get_image().size[1])
         
-        self.component_text.add_white_border(2*self.barcode_module_size)
-        self.component_barcode.add_padding(2*self.barcode_module_size)
+        self.component_text.add_white_border(4*self.barcode_module_size)
+        self.component_barcode.add_padding(4*self.barcode_module_size)
         
         self.label_dimensions = _calculate_label_dimensions(self.component_barcode, self.component_text, separator_line_thickness, label_type)
         self.label_image = _assemble_components(self.label_dimensions, self.component_barcode, self.component_text, separator_line_thickness, label_type)
