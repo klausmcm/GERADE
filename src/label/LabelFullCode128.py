@@ -156,17 +156,17 @@ class LabelFullCode128:
                 y_start = 0
                 y_end = label_image.size[1] - 1
                 
-                draw.line([(x_start, offset + i),
-                           (offset + i, y_start)],
+                draw.line([(x_start, offset - i),
+                           (offset - i, y_start)],
                           fill="black")
-                draw.line([(x_end - offset - i, y_start),
-                           (x_end, offset + i)],
+                draw.line([(x_end - offset + i, y_start),
+                           (x_end, offset - i)],
                           fill="black")
-                draw.line([(x_end, y_end - offset - i),
-                           (x_end - offset - i, y_end)],
+                draw.line([(x_end, y_end - offset + i),
+                           (x_end - offset + i, y_end)],
                           fill="black")
-                draw.line([(offset + i, y_end),
-                           (x_start, y_end - offset - i)],
+                draw.line([(offset - i, y_end),
+                           (x_start, y_end - offset + i)],
                           fill="black")
             return label_image
         
