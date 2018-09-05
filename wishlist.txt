@@ -1,3 +1,0 @@
-- template for letter page or A4 size paper with barcode for labeling individual sheets of paper (spec: 1 mm thick border)
-- label page generator - just specify first number and number of pages, rest will be generated
-
