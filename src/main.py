@@ -1,32 +1,33 @@
 '''
 @author: Klaus
 '''
-# from page import Page
-from label.barcode import LabelComponentBarcode
-from label.label import Label
-from label.barcode_label import LabelComponentText
-from page import Page
-from pint import UnitRegistry
-import label.id as id
-import constants
-import analysis
+
+from label.LabelFullDataMatrix import LabelFullDataMatrix
+from label.LabelFullCode128 import LabelFullCode128
+from Page import Page
+
+
 
 if __name__ == "__main__":
-    module_size = analysis.get_module_size( constants.SMALL_LABEL_SPECS )
-    for k in range( 3 ):
-        barcode       = LabelComponentBarcode( constants.SMALL_LABEL_SPECS, module_size, "aaaa", constants )
-        barcode_label = LabelComponentText( constants.SMALL_LABEL_SPECS, "aaaa", constants )
-        label         = Label( constants.SMALL_LABEL_SPECS, barcode, barcode_label )
-        page          = Page( constants.PAPER[ "sticker" ], constants.TAPE_SPECS )
-        page.init_page( label )
-
-        for i in range( len( page.get_grid_coordinates() ) ):
-            id_var        = id.get_next_available_id()[ "id_variable" ]
-            barcode       = LabelComponentBarcode( constants.SMALL_LABEL_SPECS, module_size, id_var, constants )
-            barcode_label = LabelComponentText( constants.SMALL_LABEL_SPECS, id_var, constants )
-            label         = Label( constants.SMALL_LABEL_SPECS, barcode, barcode_label )
-            page.paste_label_without_coordinates( label )
-            id.deactivate_entry( id_var )
-        page.create_letter_page()
-        page.save_page_to_file( id_var )
-
+    def format_int(i):
+        s = "%08d" % (i,)
+        s = "\n".join([s[:4], s[4:]])
+        return s
+    
+    coordinates = (0, 0)
+    paper = Page("/media/sf_shared/workspace/barcode/files/template_letter.png")
+    barcode_module_size = -1
+    
+    for i in range(500):
+        label = LabelFullDataMatrix("".join(["a0a0", "a0a0", format_int(i)]), 2, 3, barcode_module_size=-1, text_font_size=80)
+        label.save_image_to_file("/media/sf_shared/test" + str(i) + ".png")
+        if barcode_module_size == -1:
+            barcode_module_size = label.get_module_size() 
+        coordinates = paper.find_coordinates_for_next_available_spot(label)
+        print(coordinates)
+        if coordinates == (-1, -1):
+            break
+        paper.add_label(label, coordinates, overlap=True)
+    paper.save_page_to_file("/media/sf_shared/page.png")
+    
+    print("complete")

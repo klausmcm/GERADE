@@ -187,21 +187,25 @@ class LabelFullDataMatrix:
         def _draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness, label_type):
             """
             """
-            #TODO: polish the coordinate calculations
             offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
             draw = ImageDraw.Draw(label_image)
             for i in range(line_width):
-                draw.line([(0, offset - i),
-                           (offset - i, 0)],
+                x_start = 0
+                x_end = label_image.size[0] - 1
+                y_start = 0
+                y_end = label_image.size[1] - 1
+                
+                draw.line([(x_start, offset + i),
+                           (offset + i, y_start)],
                           fill="black")
-                draw.line([(label_image.size[0] - offset + i - 1, 0),
-                           (label_image.size[0], offset - i + 1)],
+                draw.line([(x_end - offset - i, y_start),
+                           (x_end, offset + i)],
                           fill="black")
-                draw.line([(label_image.size[0] - 1, label_image.size[1] - offset - i),
-                           (label_image.size[0] - offset - i, label_image.size[1] - 1)],
+                draw.line([(x_end, y_end - offset - i),
+                           (x_end - offset - i, y_end)],
                           fill="black")
-                draw.line([(offset - i + 1, label_image.size[1]),
-                           (0, label_image.size[1] - offset + i - 1)],
+                draw.line([(offset + i, y_end),
+                           (x_start, y_end - offset - i)],
                           fill="black")
             if label_type == 4:
                 #TODO: implement
