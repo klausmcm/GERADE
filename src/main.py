@@ -21,7 +21,7 @@ if __name__ == "__main__":
     for i in range(500):
         #TODO: test with the case where the line thickness is at least 20 -> need to review calculation of trim lines
         label = LabelFullDataMatrix("".join(["a0a0", "a0a0", format_int(i)]), 2, 3, barcode_module_size=-1, text_font_size=80)
-        label.save_image_to_file("/media/sf_shared/test" + str(i) + ".png")
+#         label.save_image_to_file("/media/sf_shared/test" + str(i) + ".png")
         if barcode_module_size == -1:
             barcode_module_size = label.get_module_size() 
         coordinates = paper.find_coordinates_for_next_available_spot(label)
@@ -29,6 +29,6 @@ if __name__ == "__main__":
         if coordinates == (-1, -1):
             break
         paper.add_label(label, coordinates, overlap=True)
-    paper.save_page_to_file("/media/sf_shared/page.png")
+    paper.save_page_to_file("/media/klaus/ssh/pi-bedroom-remote/downloads/page.png")
     
     print("complete")
