@@ -270,7 +270,9 @@ class LabelFullDataMatrix:
         self.label_image = draw_bounding_lines(self.component_barcode, self.label_image, separator_line_thickness, label_type)
         self.label_image = draw_corner_trim_lines(self.label_image, separator_line_thickness, self.component_barcode.get_border_thickness(), label_type)
         
-
+    def get_image(self):
+        return self.label_image
+    
     def get_module_size(self):
         return self.size_barcode_module
     
