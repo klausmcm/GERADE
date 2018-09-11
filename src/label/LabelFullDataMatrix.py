@@ -258,8 +258,8 @@ class LabelFullDataMatrix:
     def get_label_by_font_size(self, font_size):
         return self._get_label(-1, font_size, (-1, -1))
     
-    def get_label_by_dimensions(self, dimensions):
-        return self._get_label(-1, -1, dimensions)
+    def get_label_by_dimensions(self, max_dimensions):
+        return self._get_label(-1, -1, max_dimensions)
     
     def _get_label(self, size_barcode_module, size_font, dimensions):
         return
