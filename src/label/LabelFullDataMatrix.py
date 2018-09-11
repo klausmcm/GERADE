@@ -4,6 +4,7 @@ from .LabelComponentText import LabelComponentText
 from .LabelComponentBarcodeDataMatrix import LabelComponentBarcodeDataMatrix
 from PIL import Image
 from PIL import ImageDraw
+from src.main import barcode_module_size
 
 
 
@@ -250,6 +251,20 @@ class LabelFullDataMatrix:
         self.label_image = _assemble_components(self.component_barcode, self.component_text, self.label_dimensions, separator_line_thickness)
         self.label_image = _draw_bounding_lines(self.component_barcode, self.label_image, separator_line_thickness, label_type)
         self.label_image = _draw_corner_trim_lines(self.label_image, separator_line_thickness, self.component_barcode.get_border_thickness(), label_type)
+        
+    def get_label_by_barcode_module_size(self, barcode_module_size):
+        return self._get_label(barcode_module_size, -1, (-1, -1))
+    
+    def get_label_by_font_size(self, font_size):
+        return self._get_label(-1, font_size, (-1, -1))
+    
+    def get_label_by_dimensions(self, dimensions):
+        return self._get_label(-1, -1, dimensions)
+    
+    def _get_label(self, size_barcode_module, size_font, dimensions):
+        return
+    
+    
 
     def get_module_size(self):
         return self.barcode_module_size
