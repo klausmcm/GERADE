@@ -35,6 +35,7 @@ class LabelComponentText:
                               font=label_font)
                     img.paste(image_line, (0, i*image_height), mask=image_line)
                 return img
+            
         self.text_encoded = text
         self.font_size = font_size
         self.text_image = _get_text_as_image(text, font_size, color)
