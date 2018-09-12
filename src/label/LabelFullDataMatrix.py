@@ -6,8 +6,6 @@ from LabelComponentBarcodeDataMatrix import LabelComponentBarcodeDataMatrix
 from PIL import Image
 from PIL import ImageDraw
 
-
-
 class LabelFullDataMatrix:
     def __init__(self, text, separator_line_thickness, label_type, dpi=(600, 600)):
         """
@@ -22,7 +20,6 @@ class LabelFullDataMatrix:
         barcode_module_size      - Size of the barcode module in pixels.
         text_font_size           - Size of the text placed on the label.
         """
-        #TODO: implement ability to choose dimensions
         
         def get_text_on_label(text, label_type):
             """Format how the text will look on the label.

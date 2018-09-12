@@ -6,7 +6,8 @@ from PIL import Image
 
 
 class Page():
-    def __init__(self, file_path_template):
+    def __init__(self, file_path_template, dpi=(600, 600)):
+        self.dpi = dpi
         self.template = Image.open(file_path_template)
         self.output = Image.new("RGB", self.template.size, "white")
 
@@ -61,8 +62,8 @@ class Page():
     def get_page_dimensions(self):
         return self.template.size
     
-    def save_page_to_file(self, file_path, dpi=(600, 600)):
+    def save_page_to_file(self, file_path):
         '''
         Write template image to an image file.
         '''
-        self.output.save(file_path, dpi=dpi)
+        self.output.save(file_path, dpi=self.dpi)

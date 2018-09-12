@@ -15,7 +15,6 @@ class LabelFullCode128:
         2 - Code 128 barcode with text at the bottom - barcode has +1/= height as the text and is >=x2 the width of the text
         3 - Code 128 barcode with text on the side (thin but long) - barcode width and height is at least equal to the text width and height
         """
-        #TODO: implement ability to choose dimensions
         
         def _get_text_on_label(text, label_type):
             text_on_label = "".join([c for c in text if c in string.ascii_letters + string.digits])
