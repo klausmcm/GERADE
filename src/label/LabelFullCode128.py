@@ -10,22 +10,17 @@ class LabelFullCode128:
     def __init__(self, text, separator_line_thickness, label_type, dpi=(600, 600)):
         """
         types
-        0 - Plain code 128 barcode - no text
+        0 - Plain code 128 barcode - barcode width and height is at least equal to the text width and height
         1 - Code 128 barcode with text on the barcode - barcode has +1/= height as the text and is >=x2 the width of the text
         2 - Code 128 barcode with text at the bottom - barcode has +1/= height as the text and is >=x2 the width of the text
-        3 - Code 128 barcode with text on the side (thin but long) - barcode width and height is equal to the text width and height
+        3 - Code 128 barcode with text on the side (thin but long) - barcode width and height is at least equal to the text width and height
         """
         def _get_text_on_label(text, label_type):
             text_on_label = "".join([c for c in text if c in string.ascii_letters + string.digits])
-            if label_type == 0:
-                text_on_label = ""
-            elif label_type == 1 or label_type == 2 or label_type == 3:
-                text_on_label = "-".join([text_on_label[:4],
-                                          text_on_label[4:8],
-                                          text_on_label[8:12],
-                                          text_on_label[12:]])
-            else:
-                text_on_label = ""
+            text_on_label = "-".join([text_on_label[:4],
+                                      text_on_label[4:8],
+                                      text_on_label[8:12],
+                                      text_on_label[12:]])
             return text_on_label
         
         
