@@ -1,8 +1,8 @@
 import math
 import string
 import sys
-from LabelComponentText import LabelComponentText
-from LabelComponentBarcodeDataMatrix import LabelComponentBarcodeDataMatrix
+from .LabelComponentText import LabelComponentText
+from .LabelComponentBarcodeDataMatrix import LabelComponentBarcodeDataMatrix
 from PIL import Image
 from PIL import ImageDraw
 

@@ -1,8 +1,8 @@
 import math
 import string
 import sys
-from LabelComponentText import LabelComponentText
-from LabelComponentBarcodeCode128 import LabelComponentBarcodeCode128
+from .LabelComponentText import LabelComponentText
+from .LabelComponentBarcodeCode128 import LabelComponentBarcodeCode128
 from PIL import Image
 from PIL import ImageDraw
  
