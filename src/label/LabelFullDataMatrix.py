@@ -44,6 +44,7 @@ class LabelFullDataMatrix:
                 text_on_label = ""
             return text_on_label
         
+        self.label_image = None
         self.text_on_label = get_text_on_label(text, label_type)
         self.label_type = label_type
         self.separator_line_thickness = separator_line_thickness
