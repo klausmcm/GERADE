@@ -26,7 +26,7 @@ if __name__ == "__main__":
         if barcode_module_size != -1 and font_size != -1:
             label.set_label(barcode_module_size, font_size)
         else:
-            label.set_label_by_dimensions((-1, .7 * cm))
+            label.set_label_by_dimensions((-1, .5 * cm))
             barcode_module_size = label.get_module_size()
             font_size = label.get_font_size()
         coordinates = paper.find_coordinates_for_next_available_spot(label)
