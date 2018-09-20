@@ -24,16 +24,21 @@ class Page():
         def has_enough_space(label, coordinates):
             label_size = label.get_image().size
             if (self.template_pixels[coordinates[0], coordinates[1]] == self.PX_UNAVAILABLE or
-                self.template_pixels[coordinates[0], coordinates[1]] == self.PX_FAILED or
-                coordinates[0] + label_size[0] > self.template_width or 
-                coordinates[1] + label_size[1] > self.template_height):
+                self.template_pixels[coordinates[0], coordinates[1]] == self.PX_FAILED):
                 return False
+            elif (coordinates[0] + label_size[0] > self.template_width or 
+                  coordinates[1] + label_size[1] > self.template_height):
+                    self.template_pixels[coordinates[0], coordinates[1]] = self.PX_FAILED
+                    return False
             else:
                 for y_label in range(label_size[1]):
                     for x_label in range(label_size[0]):
-                        if self.template_pixels[coordinates[0] + x_label, coordinates[1] + y_label] == self.PX_UNAVAILABLE:
-                            self.template_pixels = self.PX_FAILED
+                        if (self.template_pixels[coordinates[0] + x_label, coordinates[1] + y_label] == self.PX_UNAVAILABLE or
+                            self.template_pixels[coordinates[0] + x_label, coordinates[1] + y_label] == self.PX_FAILED):
+                            self.template_pixels[x_label, y_label] = self.PX_FAILED
                             return False
+                        else:
+                            self.template_pixels[coordinates[0] + x_label, coordinates[1] + y_label] = self.PX_FAILED
             return True
         
         for y in range(self.template.size[1]):
@@ -79,7 +84,18 @@ class Page():
         return
     
     def get_page_dimensions(self):
+        """
+        """
         return self.template.size
+    
+    def clean_template(self):
+        """
+        """
+        for y in range(self.template_height):
+            for x in range(self.template_width):
+                if self.template_pixels[x, y] == self.PX_FAILED:
+                    self.template_pixels[x, y] = self.PX_AVAILABLE
+        return
     
     def save_page_to_file(self, file_path):
         """

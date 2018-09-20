@@ -15,7 +15,7 @@ if __name__ == "__main__":
         return s
     
     coordinates = (0, 0)
-    paper = Page("/home/klaus/template_sticker_small.png")
+    paper = Page("/media/klaus/ssh/pi-bedroom/downloads/barcode/files/template_sticker_small.png")
     barcode_module_size = -1
     font_size = -1
     
@@ -37,6 +37,7 @@ if __name__ == "__main__":
             break
         paper.add_label(label, coordinates, overlap=True)
     paper.save_page_to_file("/home/klaus/result.png")
+    paper.clean_template()
     paper.save_template_to_file("/home/klaus/template.png")
     
     print("complete")
