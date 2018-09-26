@@ -23,10 +23,9 @@ if __name__ == "__main__":
     
     for i in range(10**8):
         #TODO: test with the case where the line thickness is at least 20 -> need to review calculation of trim lines
-        #TODO: add ability to rotate labels or template
-        #tape is 1.8 cm wide so will use 3 mm buffer
-        #sticker paper is 15.5 cm high and 10.5 cm wide
+        
         label = LabelFullCode128("".join(["a0a0", "a0a0", format_int(i + next_num)]), 2, 3)
+        #label.rotate_label()
         if barcode_module_size != -1 and font_size != -1:
             label.set_label(barcode_module_size, font_size)
         else:
