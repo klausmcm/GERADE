@@ -16,7 +16,7 @@ class LabelFullCode128:
         3 - Code 128 barcode with text on the side (thin but long) - barcode width and height is at least equal to the text width and height
         """
         
-        def _get_text_on_label(text, label_type):
+        def _get_text_on_label(text):
             text_on_label = "".join([c for c in text if c in string.ascii_letters + string.digits])
             text_on_label = "-".join([text_on_label[:4],
                                       text_on_label[4:8],
@@ -121,7 +121,7 @@ class LabelFullCode128:
             return dimensions
         
         def assemble_components(label_dimensions, component_barcode, component_text, separator_line_thickness, label_type):
-            def draw_separator_lines(label_image, component_barcode, component_text, separator_line_thickness, label_type):
+            def draw_separator_lines(label_image, component_barcode, separator_line_thickness, label_type):
                 result = ImageDraw.Draw(label_image)
                 for i in range(separator_line_thickness):
                     result.line([(0, i),
@@ -228,6 +228,10 @@ class LabelFullCode128:
     
     def get_font_size(self):
         return self.size_font
+    
+    def rotate_label(self):
+        self.label_image.rotate(90, expand=True)
+        return
     
     def get_border_thickness(self):
         return self.separator_line_thickness

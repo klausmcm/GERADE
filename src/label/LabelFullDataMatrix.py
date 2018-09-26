@@ -277,6 +277,10 @@ class LabelFullDataMatrix:
     
     def get_font_size(self):
         return self.size_font
+    
+    def rotate_label(self):
+        self.label_image.rotate(90, expand=True)
+        return
 
     def get_border_thickness(self):
         return self.separator_line_thickness
