@@ -2,6 +2,7 @@
 @author: Klaus
 '''
 
+import os
 from PIL import Image
 
 class Page():
@@ -9,13 +10,13 @@ class Page():
     PX_AVAILABLE = (255, 255, 255)
     PX_FAILED = (255, 0, 0)
     
-    def __init__(self, file_path_template, dpi=(600, 600)):
+    def __init__(self, file_path_template, file_path_output, dpi=(600, 600)):
         self.dpi = dpi
         self.template = Image.open(file_path_template)
         self.template_pixels = self.template.load()
         self.template_width = self.template.size[0]
         self.template_height = self.template.size[1]
-        self.output = Image.new("RGB", self.template.size, "white")
+        self.output = Image.new("RGB", self.template.size, "white") if not os.path.isfile(file_path_output) else Image.open(file_path_output)
         
 
     def find_coordinates_for_next_available_spot(self, label):
@@ -75,7 +76,6 @@ class Page():
                 for x_label in range(label.get_image().size[0]):
                     template_pixels[label_coordinates[0] + x_label, label_coordinates[1] + y_label] = pixel_value
             return template
-        
         update_template(self.template, label, label_coordinates, self.PX_AVAILABLE)
         label_coordinates = get_adjusted_coordinates(label, label_coordinates, overlap)
         update_output(self.output, label, label_coordinates)

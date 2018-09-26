@@ -15,20 +15,22 @@ if __name__ == "__main__":
         return s
     
     coordinates = (0, 0)
-    paper = Page("/media/klaus/ssh/pi-bedroom/downloads/barcode/files/template_sticker_small.png")
+    paper = Page("/home/klaus/template.png", "/home/klaus/result.png")
     barcode_module_size = -1
     font_size = -1
+    next_num = 370
+    #redo = []
     
-    for i in range(500):
+    for i in range(10**8):
         #TODO: test with the case where the line thickness is at least 20 -> need to review calculation of trim lines
         #TODO: add ability to rotate labels or template
         #tape is 1.8 cm wide so will use 3 mm buffer
         #sticker paper is 15.5 cm high and 10.5 cm wide
-        label = LabelFullCode128("".join(["a0a0", "a0a0", format_int(i)]), 2, 3)
+        label = LabelFullCode128("".join(["a0a0", "a0a0", format_int(i + next_num)]), 2, 3)
         if barcode_module_size != -1 and font_size != -1:
             label.set_label(barcode_module_size, font_size)
         else:
-            label.set_label_by_dimensions((2243, (1.5/2) * cm))
+            label.set_label_by_dimensions((-1, (1.6/4) * cm))
             barcode_module_size = label.get_module_size()
             font_size = label.get_font_size()
         coordinates = paper.find_coordinates_for_next_available_spot(label)
@@ -36,8 +38,8 @@ if __name__ == "__main__":
         if coordinates == (-1, -1):
             break
         paper.add_label(label, coordinates, overlap=True)
-    paper.save_page_to_file("/home/klaus/result.png")
     paper.clean_template()
+    paper.save_page_to_file("/home/klaus/result.png")
     paper.save_template_to_file("/home/klaus/template.png")
     
     print("complete")

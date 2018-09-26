@@ -181,7 +181,8 @@ class LabelFullCode128:
         def draw_corner_trim_lines(label_image, line_width, barcode_padding_thickness):
             """
             """
-            offset = round((math.sqrt(2*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
+            size = 8
+            offset = round((math.sqrt(size*math.pow(barcode_padding_thickness, 2)) - barcode_padding_thickness) / math.cos(math.radians(45)))
             draw = ImageDraw.Draw(label_image)
             for i in range(line_width):
                 x_start = 0
